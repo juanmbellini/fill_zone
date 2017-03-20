@@ -1,5 +1,6 @@
-package ar.edu.itba.sia.fill_zone.solver.interfaces;
+package ar.edu.itba.sia.fill_zone.solver.api;
 
+import ar.edu.itba.sia.fill_zone.solver.exception.NotAppliableException;
 
 /**
  * GPSRule interface.
@@ -25,7 +26,7 @@ public interface GPSRule {
 	 *
 	 * @param state The previous state of the problem.
 	 * @return The next state of the problem.
-	 * @throws NotApplicableException If the rule can not be applied to the received state.
+	 * @throws NotAppliableException If the rule can not be applied to the received state.
 	 */
-	GPSState evalRule(GPSState state) throws NotApplicableException;
+	GPSState evalRule(GPSState state) throws NotAppliableException;
 }

@@ -1,7 +1,7 @@
-package ar.edu.itba.sia.fill_zone.solver.engine;
+package ar.edu.itba.sia.fill_zone.solver;
 
 
-import ar.edu.itba.sia.fill_zone.solver.interfaces.GPSState;
+import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
 
 public class GPSNode {
 
