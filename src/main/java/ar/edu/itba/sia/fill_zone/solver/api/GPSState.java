@@ -1,4 +1,4 @@
-package ar.edu.itba.sia.fill_zone.solver.interfaces;
+package ar.edu.itba.sia.fill_zone.solver.api;
 
 /**
  * GPSState interface.
