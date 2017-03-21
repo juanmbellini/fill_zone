@@ -8,23 +8,16 @@ import ar.edu.itba.sia.fill_zone.solver.exception.NotAppliableException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChangeColor implements GPSRule {
-
-	private int rows;
-
-	private int columns;
+public class ChangeColorRule implements GPSRule {
 
 	private int color;
 
 	private List<int[]> checked = new ArrayList<>();
 
-	public ChangeColor(int color, int rows, int columns) {
+	public ChangeColorRule(int color) {
 		this.color = color;
-		this.rows = rows;
-		this.columns = columns;
 	}
 
-	//TODO: esta bien? el costo deberia ser la cantidad de movimientos?
 	@Override
 	public Integer getCost() {
 		return 1;
@@ -38,23 +31,24 @@ public class ChangeColor implements GPSRule {
 	@Override
 	public GPSState evalRule(GPSState state) throws NotAppliableException {
 		FillZoneState fillZoneState = (FillZoneState) state;
+		Board oldBoard = fillZoneState.getBoard();
 
-		if (color == fillZoneState.startingColor())
+		if(color == oldBoard.startingColor())
 			throw new NotAppliableException();
 
-		int[][] newBoard = duplicateBoard(fillZoneState.getBoard());
+		Board newBoard = new Board(oldBoard.getRows(), oldBoard.getColumns(), oldBoard.getColors(), duplicateBoard(fillZoneState.getBoard().getBoard(), oldBoard.getRows(), oldBoard.getColumns()));
 		applyColor(newBoard);
 		return new FillZoneState(newBoard, fillZoneState.getMoves() + 1);
 	}
 
-	private void applyColor(int[][] board) {
-		applyColorRec(board, board[0][0], 0, 0);
+	private void applyColor(Board board) {
+		applyColorRec(board, board.startingColor(), 0, 0);
 		checked.clear();
 	}
 
-	private void applyColorRec(int[][] board, int oldColor, int row, int col) {
-		if (board[row][col] == oldColor) {
-			board[row][col] = color;
+	private void applyColorRec(Board board, int oldColor, int row, int col) {
+		if (board.getBoard()[row][col] == oldColor) {
+			board.setColorAtLocker(color, row, col);
 			checked.add(new int[]{row, col});
 
 			//up
@@ -62,7 +56,7 @@ public class ChangeColor implements GPSRule {
 				applyColorRec(board, oldColor, row - 1, col);
 			}
 			//down
-			if (row < (rows - 1) && !checked.contains(new int[]{row + 1, col})) {
+			if (row < (board.getRows() - 1) && !checked.contains(new int[]{row + 1, col})) {
 				applyColorRec(board, oldColor, row + 1, col);
 			}
 			//left
@@ -70,14 +64,16 @@ public class ChangeColor implements GPSRule {
 				applyColorRec(board, oldColor, row, col - 1);
 			}
 			//right
-			if (col < (columns - 1) && !checked.contains(new int[]{row, col + 1})) {
+			if (col < (board.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
 				applyColorRec(board, oldColor, row, col + 1);
 			}
+		}else{
+			checked.add(new int[]{row, col});
 		}
 	}
 
 	//TODO: es necesario?
-	private int[][] duplicateBoard(int[][] oldBoard) {
+	private int[][] duplicateBoard(int[][] oldBoard, int rows, int columns) {
 		int[][] newBoard = new int[rows][columns];
 
 		for (int row = 0; row < rows; row++) {

@@ -1,6 +1,7 @@
 package ar.edu.itba.sia.fill_zone.models;
 
 
+import ar.edu.itba.sia.fill_zone.models.interfaces.Heuristic;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
@@ -16,16 +17,19 @@ public class FillZoneProblem implements GPSProblem {
 
 	private int colors;
 
+	Heuristic heuristic;
+
 	List<GPSRule> rules;
 
-	public FillZoneProblem(int rows, int columns, int colors) {
+	public FillZoneProblem(int rows, int columns, int colors, Heuristic heuristic) {
 		this.rows = rows;
 		this.columns = columns;
 		this.colors = colors;
+		this.heuristic = heuristic;
 
 		rules = new ArrayList<>();
-		for (int color = 1; color <= colors; color++) {
-			rules.add(new ChangeColor(color, rows, columns));
+		for (int color = 0; color < colors; color++) {
+			rules.add(new ChangeColorRule(color));
 		}
 	}
 
@@ -40,7 +44,7 @@ public class FillZoneProblem implements GPSProblem {
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < columns; col++) {
-				if (fillZoneState.getBoard()[row][col] != fillZoneState.startingColor()) {
+				if (fillZoneState.getBoard().getBoard()[row][col] != fillZoneState.getBoard().startingColor()) {
 					return false;
 				}
 			}
@@ -54,21 +58,20 @@ public class FillZoneProblem implements GPSProblem {
 		return rules;
 	}
 
-	//TODO
 	@Override
 	public Integer getHValue(GPSState state) {
-		return null;
+		return heuristic.getHValue(state);
 	}
 
-	private int[][] newRandomBoard() {
+	private Board newRandomBoard() {
 		int[][] board = new int[rows][columns];
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < columns; col++) {
-				board[row][col] = 1 + (int) (Math.random() * colors);
+				board[row][col] = (int) (Math.random() * colors);
 			}
 		}
 
-		return board;
+		return new Board(rows, columns, colors, board);
 	}
 }

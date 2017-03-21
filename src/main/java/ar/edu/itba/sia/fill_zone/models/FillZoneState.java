@@ -7,11 +7,11 @@ import java.util.Arrays;
 
 public class FillZoneState implements GPSState {
 
-	private int[][] board;
+	private Board board;
 
 	private int moves;
 
-	public FillZoneState(int[][] board, int moves) {
+	public FillZoneState(Board board, int moves) {
 		this.board = board;
 		this.moves = moves;
 	}
@@ -23,20 +23,11 @@ public class FillZoneState implements GPSState {
 
 		FillZoneState that = (FillZoneState) o;
 
-		return Arrays.deepEquals(board, that.board);
-
+		return Arrays.deepEquals(board.getBoard(), that.getBoard().getBoard());
 	}
 
-	public int startingColor() {
-		return board[0][0];
-	}
-
-	public int[][] getBoard() {
+	public Board getBoard() {
 		return board;
-	}
-
-	public void setBoard(int[][] board) {
-		this.board = board;
 	}
 
 	public int getMoves() {
