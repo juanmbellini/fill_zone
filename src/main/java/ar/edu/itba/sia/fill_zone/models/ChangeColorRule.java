@@ -3,10 +3,10 @@ package ar.edu.itba.sia.fill_zone.models;
 
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
-import ar.edu.itba.sia.fill_zone.solver.exception.NotAppliableException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class ChangeColorRule implements GPSRule {
 
@@ -29,16 +29,18 @@ public class ChangeColorRule implements GPSRule {
 	}
 
 	@Override
-	public GPSState evalRule(GPSState state) throws NotAppliableException {
+	public Optional<GPSState> evalRule(GPSState state) {
 		FillZoneState fillZoneState = (FillZoneState) state;
 		Board oldBoard = fillZoneState.getBoard();
 
-		if(color == oldBoard.startingColor())
-			throw new NotAppliableException();
+		if (color == oldBoard.startingColor()) {
+			return Optional.empty();
+		}
 
-		Board newBoard = new Board(oldBoard.getRows(), oldBoard.getColumns(), oldBoard.getColors(), duplicateBoard(fillZoneState.getBoard().getBoard(), oldBoard.getRows(), oldBoard.getColumns()));
+		Board newBoard = new Board(oldBoard.getRows(), oldBoard.getColumns(), oldBoard.getColors(),
+				duplicateBoard(fillZoneState.getBoard().getBoard(), oldBoard.getRows(), oldBoard.getColumns()));
 		applyColor(newBoard);
-		return new FillZoneState(newBoard, fillZoneState.getMoves() + 1);
+		return Optional.of(new FillZoneState(newBoard, fillZoneState.getMoves() + 1));
 	}
 
 	private void applyColor(Board board) {
@@ -67,7 +69,7 @@ public class ChangeColorRule implements GPSRule {
 			if (col < (board.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
 				applyColorRec(board, oldColor, row, col + 1);
 			}
-		}else{
+		} else {
 			checked.add(new int[]{row, col});
 		}
 	}
