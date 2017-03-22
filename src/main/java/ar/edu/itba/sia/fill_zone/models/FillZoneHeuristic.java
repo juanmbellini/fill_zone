@@ -15,7 +15,7 @@ public enum FillZoneHeuristic implements Heuristic{
         @Override
         public Integer getHValue(GPSState state) {
             final FillZoneState fillZoneState = (FillZoneState) state;
-            int[] colorRegister = fillZoneState.getBoard().getColorRegister();
+            final int[] colorRegister = fillZoneState.getBoard().getColorRegister();
 
             int c = 0;
             for(int i = 0; i < colorRegister.length; i++){
