@@ -1,75 +1,112 @@
 package ar.edu.itba.sia.fill_zone.models;
 
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
+/**
+ * Class representing a fill zone board.
+ */
 public class Board {
 
-    private int rows;
+	/**
+	 * The number of rows of the board.
+	 */
+	private final int rows;
 
-    private int columns;
+	/**
+	 * The number of columns of the board.
+	 */
+	private final int columns;
 
-    private int colors;
+	/**
+	 * The amount of colors in the pallet.
+	 */
+	private final int colors;
 
-    private int[][] board;
+	/**
+	 * The board matrix.
+	 */
+	private final int[][] board;
 
-    private int[] colorRegister;
+	/**
+	 * Counts the amount of colors in the board.
+	 */
+	private final int[] amountOfEachColor;
 
-    public Board(int rows, int columns, int colors, int[][] board){
-        this.rows = rows;
-        this.columns = columns;
-        this.colors = colors;
-        this.board = board;
-        colorRegister = new int[colors];
+	/**
+	 * Constructor.
+	 *
+	 * @param rows    The amount of rows.
+	 * @param columns The amount of columns.
+	 * @param colors  The amount of colors in the pallet.
+	 * @param board   The board matrix.
+	 */
+	public Board(int rows, int columns, int colors, int[][] board) {
+		this.rows = rows;
+		this.columns = columns;
+		this.colors = colors;
+		this.board = board;
+		this.amountOfEachColor = new int[colors];
 
-        for(int row = 0; row < rows; row++){
-            for(int col = 0; col < columns; col++){
-                colorRegister[board[row][col]]++;
-            }
-        }
-    }
+//		IntStream.range(0, rows).forEach(row ->
+//				IntStream.range(0, columns).forEach(column ->
+//						this.amountOfEachColor[board[row][column]]++));
 
-    public int startingColor() {
-        return board[0][0];
-    }
 
-    public void setColorAtLocker(int color, int row, int column){
-        if(color > colors || color < 0){
-            throw new IndexOutOfBoundsException();
-        }
+		for (int row = 0; row < rows; row++) {
+			for (int col = 0; col < columns; col++) {
+				amountOfEachColor[board[row][col]]++;
+			}
+		}
+	}
 
-        colorRegister[board[row][column]]--;
-        board[row][column] = color;
-        colorRegister[color]++;
-    }
+	public int startingColor() {
+		return board[0][0];
+	}
 
-    public int getRows() {
-        return rows;
-    }
+	public void setColorAtLocker(int row, int column, int color) {
+		if (color > this.colors || color < 0) {
+			throw new IllegalArgumentException();
+		}
 
-    public int getColumns() {
-        return columns;
-    }
+		amountOfEachColor[board[row][column]]--;
+		board[row][column] = color;
+		amountOfEachColor[color]++;
+	}
 
-    public int getColors() {
-        return colors;
-    }
+	public int getRows() {
+		return rows;
+	}
 
-    //TODO: defensive copy?
-    public int[][] getBoard() {
-        return board;
-    }
+	public int getColumns() {
+		return columns;
+	}
 
-    public int[] getColorRegister() {
-        return colorRegister.clone();
-    }
+	public int getColors() {
+		return colors;
+	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+	public int[][] getBoard() {
+		return board;
+	}
 
-        Board that = (Board) o;
+	public int[] getAmountOfEachColor() {
+		return amountOfEachColor.clone();
+	}
 
-        return Arrays.deepEquals(board, that.board);
-    }
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Board that = (Board) o;
+
+		return Arrays.deepEquals(board, that.board);
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.deepHashCode(board);
+	}
 }
