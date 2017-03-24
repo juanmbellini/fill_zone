@@ -23,7 +23,6 @@ public enum FillZoneHeuristic implements Heuristic {
 		}
 	},
 
-	//TODO
 	/**
 	 * Amount of groups of colors in the board.
 	 */
@@ -36,18 +35,45 @@ public enum FillZoneHeuristic implements Heuristic {
 			boolean[][] groupedBoxes = new boolean[board.getRows()][board.getColumns()];
 			int c = 0;
 
-			for (int i = 0; i < board.getColumns(); i++) {
-				for (int j = 0; j < board.getRows(); j++) {
+			for (int i = 0; i < board.getRows(); i++) {
+				for (int j = 0; j < board.getColumns(); j++) {
 					if (!groupedBoxes[i][j]) {
 						c++;
 						groupedBoxes[i][j] = true;
-						//TODO funcion para agregar coordinadas true a los grouped boxes
+						groupRec(groupedBoxes, board, i, j, board.getBoard()[i][j]);
 					}
 				}
 			}
 
 			return c;
 		}
+
+		private void groupRec(boolean[][] boardAux, final Board board, int row, int col, final int color){
+            if(board.getBoard()[row][col] == color){
+                boardAux[row][col] = true;
+
+                //up
+                if(row>0){
+                    groupRec(boardAux, board, row-1, col, color);
+                }
+
+                //down
+                if(row<board.getRows()-1){
+                    groupRec(boardAux, board, row+1, col, color);
+                }
+
+                //left
+                if(col>0){
+                    groupRec(boardAux, board, row, col-1, color);
+                }
+
+                //right
+                if(col<board.getColumns()-1){
+                    groupRec(boardAux, board, row, col+1, color);
+                }
+            }
+        }
+
 	},;
 
 
