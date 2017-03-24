@@ -74,7 +74,6 @@ public class ChangeColorRule implements GPSRule {
 		}
 	}
 
-	//TODO: es necesario?
 	private int[][] duplicateBoard(int[][] oldBoard, int rows, int columns) {
 		int[][] newBoard = new int[rows][columns];
 
