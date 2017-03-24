@@ -1,9 +1,5 @@
 package ar.edu.itba.sia.fill_zone.solver;
 
-import ar.edu.itba.sia.fill_zone.models.Board;
-import ar.edu.itba.sia.fill_zone.models.FillZoneHeuristic;
-import ar.edu.itba.sia.fill_zone.models.FillZoneProblem;
-import ar.edu.itba.sia.fill_zone.models.FillZoneState;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
@@ -22,7 +18,6 @@ public class GPSEngine {
 
 	private final Solver solver;
 
-
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
 
@@ -36,13 +31,13 @@ public class GPSEngine {
 		this.failed = false;
 		switch (strategy) {
 			case BFS:
-				this.solver = new DFSSolver(this); // TODO: cambiar
+				this.solver = new BFSSolver(this);
 				break;
 			case DFS:
 				this.solver = new DFSSolver(this);
 				break;
 			case IDDFS:
-				this.solver = new DFSSolver(this); // TODO: cambiar
+				this.solver = new IDDFSSolver(this);
 				break;
 			case GREEDY:
 				this.solver = new DFSSolver(this); // TODO: cambiar
@@ -333,7 +328,8 @@ public class GPSEngine {
 				if (o1 == null || o2 == null) {
 					throw new IllegalArgumentException();
 				}
-				return o1.getCost() - o2.getCost();
+				return (o1.getCost() + engine.getProblem().getHValue(o1.getState()))
+						- (o2.getCost() + engine.getProblem().getHValue(o2.getState()));
 			});
 		}
 	}
