@@ -35,11 +35,11 @@ public class GPSEngine {
 		this.finished = false;
 		this.failed = false;
 		switch (strategy) {
-			case DFS:
-				this.solver = new DFSSolver(this);
-				break;
 			case BFS:
 				this.solver = new DFSSolver(this); // TODO: cambiar
+				break;
+			case DFS:
+				this.solver = new DFSSolver(this);
 				break;
 			case IDDFS:
 				this.solver = new DFSSolver(this); // TODO: cambiar
@@ -203,11 +203,46 @@ public class GPSEngine {
 		protected abstract void explode(GPSNode node);
 
 		protected abstract Queue<GPSNode> createQueue();
-
 	}
 
-	private static class DFSSolver extends Solver {
 
+	/**
+	 * Solver to apply the BFS searching strategy.
+	 */
+	private static class BFSSolver extends Solver {
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private BFSSolver(GPSEngine engine) {
+			super(engine);
+		}
+
+		@Override
+		protected void explode(GPSNode node) {
+			if (engine.bestCosts.containsKey(node.getState())) {
+				return;
+			}
+			Collection<GPSNode> newCandidates = new ArrayList<>();
+			engine.addCandidates(node, newCandidates);
+
+			newCandidates.forEach(engine.open::add);
+
+			// TODO: ¿Cómo se agregan los nodos a open en DFS?
+		}
+
+		@Override
+		protected Queue<GPSNode> createQueue() {
+			return new LinkedList<>();
+		}
+	}
+
+	/**
+	 * Solver to apply the DFS searching strategy.
+	 */
+	private static class DFSSolver extends Solver {
 
 		/**
 		 * Constructor.
@@ -225,8 +260,37 @@ public class GPSEngine {
 			}
 			Collection<GPSNode> newCandidates = new ArrayList<>();
 			engine.addCandidates(node, newCandidates);
+			// Can cast because this class defines which type of queue (i.e a LinkedList) the engine uses.
+			newCandidates.forEach(((Deque<GPSNode>) engine.open)::push);
+		}
 
+		@Override
+		protected Queue<GPSNode> createQueue() {
+			return new LinkedList<>();
+		}
+	}
 
+	/**
+	 * Solver to apply the IDDFS searching strategy.
+	 */
+	private static class IDDFSSolver extends Solver {
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private IDDFSSolver(GPSEngine engine) {
+			super(engine);
+		}
+
+		@Override
+		protected void explode(GPSNode node) {
+			if (engine.bestCosts.containsKey(node.getState())) {
+				return;
+			}
+			Collection<GPSNode> newCandidates = new ArrayList<>();
+			engine.addCandidates(node, newCandidates);
 			// TODO: ¿Cómo se agregan los nodos a open en DFS?
 		}
 
@@ -238,7 +302,7 @@ public class GPSEngine {
 
 
 	/**
-	 * Solver to apply the A* searching algorithm.
+	 * Solver to apply the A* searching strategy.
 	 */
 	private static class AStarSolver extends Solver {
 
