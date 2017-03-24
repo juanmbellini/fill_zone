@@ -20,34 +20,47 @@ public class GPSEngine {
 	boolean failed;
 	GPSNode solutionNode;
 
+	private final Solver solver;
 
 
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
 
-    public static void main(String[] args) {
-        FillZoneProblem problem = new FillZoneProblem(7,7,5, FillZoneHeuristic.MAX_ADMISSIBLE);
-        FillZoneState boardadd = (FillZoneState)problem.getInitState();
-        Board board = boardadd.getBoard();
-        board.printBoard();
-    }
 
-
-	public GPSEngine(GPSProblem myProblem, SearchStrategy myStrategy) {
-		// TODO: open = *Su queue favorito, TENIENDO EN CUENTA EL ORDEN DE LOS NODOS*
-		bestCosts = new HashMap<GPSState, Integer>();
-		problem = myProblem;
-		strategy = myStrategy;
-		explosionCounter = 0;
-		finished = false;
-		failed = false;
+	public GPSEngine(GPSProblem problem, SearchStrategy strategy) {
+		this.bestCosts = new HashMap<>();
+		this.problem = problem;
+		this.strategy = strategy;
+		this.explosionCounter = 0;
+		this.finished = false;
+		this.failed = false;
+		switch (strategy) {
+			case DFS:
+				this.solver = new DFSSolver(this);
+				break;
+			case BFS:
+				this.solver = new DFSSolver(this); // TODO: cambiar
+				break;
+			case IDDFS:
+				this.solver = new DFSSolver(this); // TODO: cambiar
+				break;
+			case GREEDY:
+				this.solver = new DFSSolver(this); // TODO: cambiar
+				break;
+			case ASTAR:
+				this.solver = new AStarSolver(this);
+				break;
+			default:
+				throw new RuntimeException();
+		}
+		this.open = solver.createQueue();
 	}
 
 	public void findSolution() {
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0);
 		open.add(rootNode);
 		// TODO: ¿Lógica de IDDFS?
-		while (open.size() <= 0) {
+		while (!open.isEmpty()) {
 			GPSNode currentNode = open.remove();
 			if (problem.isGoal(currentNode.getState())) {
 				finished = true;
@@ -63,6 +76,8 @@ public class GPSEngine {
 
 	private void explode(GPSNode node) {
 		Collection<GPSNode> newCandidates;
+		solver.explode(node);
+
 		switch (strategy) {
 			case BFS:
 				if (bestCosts.containsKey(node.getState())) {
@@ -125,6 +140,7 @@ public class GPSEngine {
 		bestCosts.put(node.getState(), node.getCost());
 	}
 
+
 	// GETTERS FOR THE PEOPLE!
 
 	public Queue<GPSNode> getOpen() {
@@ -157,6 +173,105 @@ public class GPSEngine {
 
 	public SearchStrategy getStrategy() {
 		return strategy;
+	}
+
+
+	/**
+	 * Abstract class representing a solver, according to a given search strategy.
+	 */
+	private static abstract class Solver {
+
+		/**
+		 * The searching engine.
+		 */
+		protected final GPSEngine engine;
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private Solver(GPSEngine engine) {
+			this.engine = engine;
+		}
+
+		/**
+		 * Explodes the given {@link GPSNode}
+		 *
+		 * @param node The node to be exploded.
+		 */
+		protected abstract void explode(GPSNode node);
+
+		protected abstract Queue<GPSNode> createQueue();
+
+	}
+
+	private static class DFSSolver extends Solver {
+
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private DFSSolver(GPSEngine engine) {
+			super(engine);
+		}
+
+		@Override
+		protected void explode(GPSNode node) {
+			if (engine.bestCosts.containsKey(node.getState())) {
+				return;
+			}
+			Collection<GPSNode> newCandidates = new ArrayList<>();
+			engine.addCandidates(node, newCandidates);
+
+
+			// TODO: ¿Cómo se agregan los nodos a open en DFS?
+		}
+
+		@Override
+		protected Queue<GPSNode> createQueue() {
+			return null; // TODO: define queue
+		}
+	}
+
+
+	/**
+	 * Solver to apply the A* searching algorithm.
+	 */
+	private static class AStarSolver extends Solver {
+
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private AStarSolver(GPSEngine engine) {
+			super(engine);
+		}
+
+		@Override
+		protected void explode(GPSNode node) {
+			if (!engine.isBest(node.getState(), node.getCost())) {
+				return;
+			}
+			Collection<GPSNode> newCandidates = new ArrayList<>();
+			engine.addCandidates(node, newCandidates);
+			newCandidates.forEach(engine.open::add);
+		}
+
+		@Override
+		protected Queue<GPSNode> createQueue() {
+			return new PriorityQueue<>((o1, o2) -> {
+				// TODO: is necessary?
+				if (o1 == null || o2 == null) {
+					throw new IllegalArgumentException();
+				}
+				return o1.getCost() - o2.getCost();
+			});
+		}
 	}
 
 }
