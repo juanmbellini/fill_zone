@@ -1,5 +1,9 @@
 package ar.edu.itba.sia.fill_zone.solver;
 
+import ar.edu.itba.sia.fill_zone.models.Board;
+import ar.edu.itba.sia.fill_zone.models.FillZoneHeuristic;
+import ar.edu.itba.sia.fill_zone.models.FillZoneProblem;
+import ar.edu.itba.sia.fill_zone.models.FillZoneState;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
@@ -16,8 +20,18 @@ public class GPSEngine {
 	boolean failed;
 	GPSNode solutionNode;
 
+
+
 	// Use this variable in open set order.
 	protected SearchStrategy strategy;
+
+    public static void main(String[] args) {
+        FillZoneProblem problem = new FillZoneProblem(7,7,5, FillZoneHeuristic.MAX_ADMISSIBLE);
+        FillZoneState boardadd = (FillZoneState)problem.getInitState();
+        Board board = boardadd.getBoard();
+        board.printBoard();
+    }
+
 
 	public GPSEngine(GPSProblem myProblem, SearchStrategy myStrategy) {
 		// TODO: open = *Su queue favorito, TENIENDO EN CUENTA EL ORDEN DE LOS NODOS*
