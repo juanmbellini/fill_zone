@@ -17,9 +17,20 @@ public class FillZoneProblem implements GPSProblem {
 
 	private int colors;
 
+	Board initBoard = null;
+
 	Heuristic heuristic;
 
 	List<GPSRule> rules;
+
+	//TODO: check if the board is valid
+	public FillZoneProblem(Board board, Heuristic heuristic) {
+		this.initBoard = board;
+		this.heuristic = heuristic;
+		this.rows = rows;
+		this.columns = board.getColumns();
+		this.colors = board.getColors();
+	}
 
 	public FillZoneProblem(int rows, int columns, int colors, Heuristic heuristic) {
 		this.rows = rows;
@@ -35,7 +46,10 @@ public class FillZoneProblem implements GPSProblem {
 
 	@Override
 	public GPSState getInitState() {
-		return new FillZoneState(newRandomBoard(), 0);
+		if(initBoard == null){
+			return new FillZoneState(newRandomBoard(), 0);
+		}
+		return new FillZoneState(initBoard, 0);
 	}
 
 	@Override
