@@ -166,7 +166,7 @@ public enum FillZoneHeuristic implements Heuristic {
 			int [][] twoColorBoard = new int[realBoard.getRows()][realBoard.getColumns()];
 			for(int i = 0; i < realBoard.getRows(); i++){
 				for(int j = 0; j < realBoard.getColumns(); j++){
-					twoColorBoard[i][j] = realBoard.getBoard()[i][j] % 2;
+					twoColorBoard[i][j] = realBoard.getMatrix()[i][j] % 2;
 				}
 			}
 
@@ -176,7 +176,7 @@ public enum FillZoneHeuristic implements Heuristic {
 
 			//combine the two color board with the real board in order to find the amount of remaining colors
 			int[][] combinedBoard = new int[realBoard.getRows()][realBoard.getColumns()];
-			int [][] finalBoard = realBoard.getBoard();
+			int [][] finalBoard = realBoard.getMatrix();
 			combineBoards(combinedBoard, finalBoard, 0, 0, realBoard.getRows(), realBoard.getColumns());
 
 
@@ -255,7 +255,7 @@ public enum FillZoneHeuristic implements Heuristic {
             return remainingColors>twoColors ? (remainingColors>combined ? remainingColors:combined) : (twoColors>combined?twoColors:combined);
         }
     },
-    
+
 	;
 
 
