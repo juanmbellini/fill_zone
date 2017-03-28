@@ -8,62 +8,76 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class FillZoneProblem implements GPSProblem {
 
-	private int rows;
+	/**
+	 * The heuristic to be used to solve the problem.
+	 */
+	private final Heuristic heuristic;
 
-	private int columns;
+	/**
+	 * The initial board of the problem.
+	 */
+	private final Board initialBoard;
 
-	private int colors;
+	/**
+	 * The rules of the problem.
+	 */
+	private final List<GPSRule> rules;
 
-	Board initBoard = null;
+	/**
+	 * The initial state of the problem.
+	 */
+	private final GPSState initialState;
 
-	Heuristic heuristic;
-
-	List<GPSRule> rules;
 
 	//TODO: check if the board is valid
+
+	/**
+	 * Constructor.
+	 *
+	 * @param board     The initial board for the problem.
+	 * @param heuristic The heuristic to be used to solve the problem.
+	 */
 	public FillZoneProblem(Board board, Heuristic heuristic) {
-		this.initBoard = board;
+		this.initialBoard = board;
 		this.heuristic = heuristic;
-		this.rows = rows;
-		this.columns = board.getColumns();
-		this.colors = board.getColors();
+		this.rules = new ArrayList<>();
+		IntStream.range(0, board.getColors()).forEach(color -> rules.add(new ChangeColorRule(color)));
+		this.initialState = new FillZoneState(initialBoard, 0);
 	}
 
+	/**
+	 * Constructor. Generates a random board according to the given values.
+	 *
+	 * @param rows      The amount of rows of the randomly generated board.
+	 * @param columns   The amount of columns of the randomly generated board.
+	 * @param colors    The amount of colors of the randomly generated board.
+	 * @param heuristic The heuristic to be used to solve the problem.
+	 */
 	public FillZoneProblem(int rows, int columns, int colors, Heuristic heuristic) {
-		this.rows = rows;
-		this.columns = columns;
-		this.colors = colors;
-		this.heuristic = heuristic;
-
-		rules = new ArrayList<>();
-		for (int color = 0; color < colors; color++) {
-			rules.add(new ChangeColorRule(color));
-		}
+		this(Board.random(rows, columns, colors), heuristic);
 	}
 
 	@Override
 	public GPSState getInitState() {
-		if(initBoard == null){
-			return new FillZoneState(newRandomBoard(), 0);
-		}
-		return new FillZoneState(initBoard, 0);
+		return initialState;
 	}
 
 	@Override
 	public boolean isGoal(GPSState state) {
-		FillZoneState fillZoneState = (FillZoneState) state;
-
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < columns; col++) {
-				if (fillZoneState.getBoard().getBoard()[row][col] != fillZoneState.getBoard().startingColor()) {
+		final FillZoneState fillZoneState = (FillZoneState) state;
+		// TODO: keep in the board the amount of different colors there are in the matrix,
+		// TODO: so this check will be easier (just check that amount is 1 or greater than one)
+		for (int row = 0; row < initialBoard.getRows(); row++) {
+			for (int col = 0; col < initialBoard.getColumns(); col++) {
+				if (fillZoneState.getBoard().getMatrix()[row][col] != fillZoneState.getBoard().startingColor()) {
 					return false;
 				}
 			}
 		}
-
 		return true;
 	}
 
@@ -77,15 +91,4 @@ public class FillZoneProblem implements GPSProblem {
 		return heuristic.getHValue(state);
 	}
 
-	private Board newRandomBoard() {
-		int[][] board = new int[rows][columns];
-
-		for (int row = 0; row < rows; row++) {
-			for (int col = 0; col < columns; col++) {
-				board[row][col] = (int) (Math.random() * colors);
-			}
-		}
-
-		return new Board(rows, columns, colors, board);
-	}
 }
