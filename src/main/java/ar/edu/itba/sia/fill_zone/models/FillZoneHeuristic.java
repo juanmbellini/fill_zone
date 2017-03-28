@@ -70,6 +70,11 @@ public enum FillZoneHeuristic implements Heuristic {
 		@Override
 		public Integer getHValue(GPSState state) {
 			final FillZoneState fillZoneState = (FillZoneState) state;
+
+			if(isGoal(state)){
+				return 0;
+			}
+
 			final int[] colorRegister = fillZoneState.getBoard().getAmountOfEachColor();
 
 			int c = 0;
@@ -81,6 +86,7 @@ public enum FillZoneHeuristic implements Heuristic {
 		}
 	},
 
+	//TODO
     /**
      * Exact solution for a two color board.
 	 * Admissible Heuristic.
@@ -90,7 +96,12 @@ public enum FillZoneHeuristic implements Heuristic {
 		public Integer getHValue(GPSState state) {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			Board realBoard = fillZoneState.getBoard();
-            int[][] realMatrix = realBoard.getMatrix();
+
+			if(isGoal(state)){
+				return 0;
+			}
+
+			int[][] realMatrix = realBoard.getMatrix();
 			int[][] twoColorMatrix = new int[realBoard.getRows()][realBoard.getColumns()];
 
 			for(int i = 0; i < realBoard.getRows(); i++){
@@ -153,14 +164,18 @@ public enum FillZoneHeuristic implements Heuristic {
 	 * Solve for a number of steps as if only two colors existed, and then check how many colors remain.
 	 * Admissible Heuristic.
 	 */
-	//TODO :CAMBIAR NOMBRE
-	COMBINED_ADMISSIBLE(){
+	//TODO
+	COMBINED_TWO_COLORS_AND_REMAINING_COLORS(){
 		private int steps = 1;
 
 		@Override
 		public Integer getHValue(GPSState state) {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			final Board realBoard = fillZoneState.getBoard();
+
+			if(isGoal(state)){
+				return 0;
+			}
 
 			//create the two color board
 			int [][] twoColorBoard = new int[realBoard.getRows()][realBoard.getColumns()];
@@ -249,14 +264,31 @@ public enum FillZoneHeuristic implements Heuristic {
     MAX_ADMISSIBLE(){
         @Override
         public Integer getHValue(GPSState state) {
+			if(isGoal(state)){
+				return 0;
+			}
             int remainingColors = REMAINING_COLORS.getHValue(state);
             int twoColors = TWO_COLORS.getHValue(state);
-			int combined = COMBINED_ADMISSIBLE.getHValue(state);
+			int combined = COMBINED_TWO_COLORS_AND_REMAINING_COLORS.getHValue(state);
             return remainingColors>twoColors ? (remainingColors>combined ? remainingColors:combined) : (twoColors>combined?twoColors:combined);
         }
     },
 
 	;
+
+    //TODO: nati hace esto
+	public boolean isGoal(GPSState state) {
+		final FillZoneState fillZoneState = (FillZoneState) state;
+		Board board = fillZoneState.getBoard();
+		for (int row = 0; row < board.getRows(); row++) {
+			for (int col = 0; col < board.getColumns(); col++) {
+				if (fillZoneState.getBoard().getMatrix()[row][col] != fillZoneState.getBoard().startingColor()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 
 }

@@ -71,6 +71,7 @@ public class FillZoneProblem implements GPSProblem {
 		final FillZoneState fillZoneState = (FillZoneState) state;
 		// TODO: keep in the board the amount of different colors there are in the matrix,
 		// TODO: so this check will be easier (just check that amount is 1 or greater than one)
+		//TODO: nati hace esto
 		for (int row = 0; row < initialBoard.getRows(); row++) {
 			for (int col = 0; col < initialBoard.getColumns(); col++) {
 				if (fillZoneState.getBoard().getMatrix()[row][col] != fillZoneState.getBoard().startingColor()) {

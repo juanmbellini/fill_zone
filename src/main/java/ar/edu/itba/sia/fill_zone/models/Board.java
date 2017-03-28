@@ -29,12 +29,12 @@ public class Board {
 	private final int[][] matrix;
 
 	/**
-	 * Counts the amount of colorsCode in the board.
+	 * Counts the amount of ColorsCode in the board.
 	 */
 	private final int[] amountOfEachColor;
 
 
-	//colorsCode that will be used to print the board in the standard output
+	//ColorsCode that will be used to print the board in the standard output
 
 
 	/**
@@ -52,11 +52,6 @@ public class Board {
 		this.matrix = matrix;
 		this.amountOfEachColor = new int[colors];
 
-//		IntStream.range(0, rows).forEach(row ->
-//				IntStream.range(0, columns).forEach(column ->
-//						this.amountOfEachColor[matrix[row][column]]++));
-
-
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < columns; col++) {
 				amountOfEachColor[matrix[row][col]]++;
@@ -71,18 +66,10 @@ public class Board {
 	 */
 	public void printBoard() {
 
-		for (int i = 0; i < colorsCode.values().length; i++) {
-			System.out.println(colorsCode.values()[i] + "holaholahola " + i + colorsCode.RESET);
-		}
-
-		// TODO: what if more than 100 colors are used?
-		if (colors > 9) {
+		if (colors > ColorsCode.values().length) {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
-					if (matrix[i][j] <= 9)
-						System.out.println(" " + matrix[i][j]);
-					else
-						System.out.println(matrix[i][j]);
+					System.out.print(matrix[i][j] + "\t");
 				}
 				System.out.println();
 			}
@@ -90,7 +77,7 @@ public class Board {
 		} else {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
-					System.out.print(colorsCode.values()[matrix[i][j]] + "" + matrix[i][j] + "\t" + colorsCode.RESET);
+					System.out.print(ColorsCode.values()[matrix[i][j]] + "" + matrix[i][j] + "\t" + ColorsCode.RESET);
 				}
 				System.out.println();
 			}
@@ -203,7 +190,8 @@ public class Board {
 	}
 
 
-	private enum colorsCode {
+	//TODO: change names
+	private enum ColorsCode {
 		RESET("\u001B[0m"),
 		ONE("\u001B[31m"),
 		TWO("\u001B[36m"),
@@ -213,11 +201,13 @@ public class Board {
 		SIX("\u001B[33m"),
 		SEVEN("\u001B[32m"),
 		EIGHT("\u001B[38m"),
-		NINE("\u001B[30m");
+		NINE("\u001B[30m"),
+
+		;
 
 		private final String color;
 
-		colorsCode(String colorI) {
+		ColorsCode(String colorI) {
 			color = colorI;
 		}
 
