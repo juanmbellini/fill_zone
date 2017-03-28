@@ -23,7 +23,7 @@ public class FillZoneState implements GPSState {
 
 		FillZoneState that = (FillZoneState) o;
 
-		return Arrays.deepEquals(board.getBoard(), that.getBoard().getBoard());
+		return Arrays.deepEquals(board.getMatrix(), that.getBoard().getMatrix());
 	}
 
 	public Board getBoard() {

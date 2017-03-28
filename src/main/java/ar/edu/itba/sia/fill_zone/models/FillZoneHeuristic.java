@@ -26,7 +26,7 @@ public enum FillZoneHeuristic implements Heuristic {
 					if (!groupedBoxes[i][j]) {
 						c++;
 						groupedBoxes[i][j] = true;
-						groupRec(groupedBoxes, board, i, j, board.getBoard()[i][j]);
+						groupRec(groupedBoxes, board, i, j, board.getMatrix()[i][j]);
 					}
 				}
 			}
@@ -35,8 +35,8 @@ public enum FillZoneHeuristic implements Heuristic {
 		}
 
 		private void groupRec(boolean[][] boardAux, final Board board, int row, int col, final int color){
-			if(board.getBoard()[row][col] == color){
-				boardAux[row][col] = true;
+            if(board.getMatrix()[row][col] == color){
+                boardAux[row][col] = true;
 
 				//up
 				if(row>0){
@@ -90,7 +90,7 @@ public enum FillZoneHeuristic implements Heuristic {
 		public Integer getHValue(GPSState state) {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			Board realBoard = fillZoneState.getBoard();
-            int[][] realMatrix = realBoard.getBoard();
+            int[][] realMatrix = realBoard.getMatrix();
 			int[][] twoColorMatrix = new int[realBoard.getRows()][realBoard.getColumns()];
 
 			for(int i = 0; i < realBoard.getRows(); i++){
@@ -109,7 +109,7 @@ public enum FillZoneHeuristic implements Heuristic {
             // check if the board is a goal state
             for(int i = 0; i < rows && isGoal; i++){
                 for(int j = 0; j < columns && isGoal; j++){
-                    isGoal = board.getBoard()[i][j] == firstColor;
+                    isGoal = board.getMatrix()[i][j] == firstColor;
                 }
             }
 
@@ -123,7 +123,7 @@ public enum FillZoneHeuristic implements Heuristic {
         }
 
         private void applyColorRec(Board board, int oldColor, int row, int col, List<int[]> checked) {
-            if (board.getBoard()[row][col] == oldColor) {
+            if (board.getMatrix()[row][col] == oldColor) {
                 board.setColorAtLocker(1 - oldColor, row, col);
                 checked.add(new int[]{row, col});
 
