@@ -66,7 +66,8 @@ public class Board {
 
 
 	/**
-	 * Prints Board, if the board has less than 9 colors then it will print it with colors, if not it will print it in black
+	 * Prints the board.
+	 * If the board has less than 9 colors, then it will print it with colors. Otherwise, it will print it in black.
 	 */
 	public void printBoard() {
 
@@ -74,6 +75,7 @@ public class Board {
 			System.out.println(colorsCode.values()[i] + "holaholahola " + i + colorsCode.RESET);
 		}
 
+		// TODO: what if more than 100 colors are used?
 		if (colors > 9) {
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < columns; j++) {
