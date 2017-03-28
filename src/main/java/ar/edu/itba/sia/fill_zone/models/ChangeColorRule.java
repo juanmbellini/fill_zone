@@ -38,7 +38,7 @@ public class ChangeColorRule implements GPSRule {
 		}
 
 		Board newBoard = new Board(oldBoard.getRows(), oldBoard.getColumns(), oldBoard.getColors(),
-				duplicateBoard(fillZoneState.getBoard().getBoard(), oldBoard.getRows(), oldBoard.getColumns()));
+				duplicateBoard(fillZoneState.getBoard().getMatrix(), oldBoard.getRows(), oldBoard.getColumns()));
 		applyColor(newBoard);
 		return Optional.of(new FillZoneState(newBoard, fillZoneState.getMoves() + 1));
 	}
@@ -49,7 +49,7 @@ public class ChangeColorRule implements GPSRule {
 	}
 
 	private void applyColorRec(Board board, int oldColor, int row, int col) {
-		if (board.getBoard()[row][col] == oldColor) {
+		if (board.getMatrix()[row][col] == oldColor) {
 			board.setColorAtLocker(color, row, col);
 			checked.add(new int[]{row, col});
 
