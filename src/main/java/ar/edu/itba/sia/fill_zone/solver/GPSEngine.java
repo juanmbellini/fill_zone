@@ -4,7 +4,9 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
 
+import javax.xml.soap.Node;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GPSEngine {
 
@@ -40,7 +42,7 @@ public class GPSEngine {
 				this.solver = new IDDFSSolver(this);
 				break;
 			case GREEDY:
-				this.solver = new DFSSolver(this); // TODO: cambiar
+				this.solver = new GreedySolver(this);
 				break;
 			case ASTAR:
 				this.solver = new AStarSolver(this);
@@ -55,6 +57,9 @@ public class GPSEngine {
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0);
 		open.add(rootNode);
 		// TODO: ¿Lógica de IDDFS?
+
+
+
 		while (!open.isEmpty()) {
 			GPSNode currentNode = open.remove();
 			if (problem.isGoal(currentNode.getState())) {
@@ -270,6 +275,10 @@ public class GPSEngine {
 	 */
 	private static class IDDFSSolver extends Solver {
 
+		private int actualDepth = 0;
+		private HashMap<GPSNode, Integer> depths = new HashMap<>();
+		private final GPSNode initialNode;
+
 		/**
 		 * Constructor.
 		 *
@@ -277,21 +286,39 @@ public class GPSEngine {
 		 */
 		private IDDFSSolver(GPSEngine engine) {
 			super(engine);
+			this.initialNode = new GPSNode(engine.problem.getInitState(), 0);
+			depths.put(initialNode, 0);
 		}
 
 		@Override
 		protected void explode(GPSNode node) {
-			if (engine.bestCosts.containsKey(node.getState())) {
-				return;
-			}
-			Collection<GPSNode> newCandidates = new ArrayList<>();
-			engine.addCandidates(node, newCandidates);
-			// TODO: ¿Cómo se agregan los nodos a open en DFS?
+            Deque<GPSNode> stack = (Deque<GPSNode>) engine.open;
+            depths.keySet().stream().filter(each -> depths.get(each) == actualDepth).forEach(stack::push);
+            while(!stack.isEmpty()) {
+                GPSNode actualNode = stack.pop();
+                if(engine.problem.isGoal(actualNode.getState())){
+                    stack.push(actualNode);
+                    return;
+                }
+
+                if(depths.get(actualNode) <= actualDepth){
+                    Collection<GPSNode> newCandidates = new LinkedList<>();
+                    engine.addCandidates(actualNode, newCandidates);
+                    for(GPSNode n : newCandidates){
+                        if(!depths.containsKey(n)){
+                            depths.put(n, depths.get(actualNode) + 1);
+                            stack.add(n);
+                        }
+                    }
+                }
+
+            }
+            actualDepth++;
 		}
 
 		@Override
 		protected Queue<GPSNode> createQueue() {
-			return null; // TODO: define queue
+			return new LinkedList<>(); // TODO: define queue
 		}
 	}
 
@@ -324,12 +351,48 @@ public class GPSEngine {
 		@Override
 		protected Queue<GPSNode> createQueue() {
 			return new PriorityQueue<>((o1, o2) -> {
-				// TODO: is necessary?
 				if (o1 == null || o2 == null) {
 					throw new IllegalArgumentException();
 				}
-				return (o1.getCost() + engine.getProblem().getHValue(o1.getState()))
-						- (o2.getCost() + engine.getProblem().getHValue(o2.getState()));
+				//TODO si f=0 devolver la resta de los h
+				return ((o1.getCost() + engine.getProblem().getHValue(o1.getState()))
+						- (o2.getCost() + engine.getProblem().getHValue(o2.getState())));
+			});
+		}
+	}
+
+	/**
+	 * Solver to apply the Greedy searching strategy.
+	 */
+	private static class GreedySolver extends Solver {
+
+
+		/**
+		 * Constructor.
+		 *
+		 * @param engine The engine.
+		 */
+		private GreedySolver(GPSEngine engine) {
+			super(engine);
+		}
+
+		@Override
+		protected void explode(GPSNode node) {
+			if (!engine.isBest(node.getState(), node.getCost())) {
+				return;
+			}
+			Collection<GPSNode> newCandidates = new LinkedList<>();
+			engine.addCandidates(node, newCandidates);
+			newCandidates.forEach(engine.open::add);
+		}
+
+		@Override
+		protected Queue<GPSNode> createQueue() {
+			return new PriorityQueue<>((o1, o2) -> {
+				if (o1 == null || o2 == null) {
+					throw new IllegalArgumentException();
+				}
+				return engine.getProblem().getHValue(o1.getState()) - engine.getProblem().getHValue(o2.getState());
 			});
 		}
 	}
