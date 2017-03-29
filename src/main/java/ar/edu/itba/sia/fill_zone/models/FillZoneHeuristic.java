@@ -71,7 +71,7 @@ public enum FillZoneHeuristic implements Heuristic {
 		public Integer getHValue(GPSState state) {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 
-			if(isGoal(state)){
+			if(isGoal(fillZoneState.getBoard())){
 				return 0;
 			}
 
@@ -97,7 +97,7 @@ public enum FillZoneHeuristic implements Heuristic {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			Board realBoard = fillZoneState.getBoard();
 
-			if(isGoal(state)){
+			if(isGoal(realBoard)){
 				return 0;
 			}
 
@@ -173,7 +173,7 @@ public enum FillZoneHeuristic implements Heuristic {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			final Board realBoard = fillZoneState.getBoard();
 
-			if(isGoal(state)){
+			if(isGoal(fillZoneState.getBoard())){
 				return 0;
 			}
 
@@ -264,7 +264,8 @@ public enum FillZoneHeuristic implements Heuristic {
     MAX_ADMISSIBLE(){
         @Override
         public Integer getHValue(GPSState state) {
-			if(isGoal(state)){
+			FillZoneState fillZoneState = (FillZoneState)state;
+			if(isGoal(fillZoneState.getBoard())){
 				return 0;
 			}
             int remainingColors = REMAINING_COLORS.getHValue(state);
@@ -276,19 +277,24 @@ public enum FillZoneHeuristic implements Heuristic {
 
 	;
 
-    //TODO: nati hace esto
-	public boolean isGoal(GPSState state) {
-		final FillZoneState fillZoneState = (FillZoneState) state;
-		Board board = fillZoneState.getBoard();
-		for (int row = 0; row < board.getRows(); row++) {
-			for (int col = 0; col < board.getColumns(); col++) {
-				if (fillZoneState.getBoard().getMatrix()[row][col] != fillZoneState.getBoard().startingColor()) {
+	/**
+	 *
+	 * @param board
+	 * @return a boolean value indicating if the board has reached a winning state.
+	 */
+	public boolean isGoal(Board board) {
+		final int[] colors = board.getAmountOfEachColor();
+		boolean oneColor = false;
+		for(int i = 0; i<colors.length; i++){
+			if(colors[i] != 0){
+				if(colors[i] == board.getColumns()*board.getRows() && !oneColor){
+					oneColor = true;
+				}else{
 					return false;
 				}
 			}
 		}
-		return true;
+		return oneColor;
 	}
-
 
 }
