@@ -278,9 +278,10 @@ public enum FillZoneHeuristic implements Heuristic {
 	;
 
 	/**
-	 *
+	 * Checks if the board has reached a goal state.
+     *
 	 * @param board
-	 * @return a boolean value indicating if the board has reached a winning state.
+	 * @return a boolean value indicating if the board has reached a goal state.
 	 */
 	public boolean isGoal(Board board) {
 		final int[] colors = board.getAmountOfEachColor();

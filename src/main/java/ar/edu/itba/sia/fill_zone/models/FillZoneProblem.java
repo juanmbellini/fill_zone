@@ -68,7 +68,8 @@ public class FillZoneProblem implements GPSProblem {
 
 
 	/**
-	 *
+	 * Checks if the board has reached a goal state.
+     *
 	 * @param state The state to establish if it is a goal state.
 	 * @return a boolean indicating if the current state is a goal state.
 	 */
@@ -78,12 +79,14 @@ public class FillZoneProblem implements GPSProblem {
 		Board board = fillZoneState.getBoard();
 		final int[] colors = board.getAmountOfEachColor();
 		boolean oneColor = false;
+
 		for(int i = 0; i<colors.length; i++){
 			if(colors[i] != 0){
-				if(colors[i] == board.getColumns()*board.getRows()){
+				if(colors[i] == board.getColumns()*board.getRows() && !oneColor){
 					oneColor = true;
+				}else{
+					return false;
 				}
-				return false;
 			}
 		}
 
