@@ -25,37 +25,53 @@ public enum FillZoneHeuristic implements Heuristic {
 				for (int j = 0; j < board.getColumns(); j++) {
 					if (!groupedBoxes[i][j]) {
 						h++;
-						groupedBoxes[i][j] = true;
-						groupRec(groupedBoxes, board, i, j, board.getMatrix()[i][j]);
+						groupRec(groupedBoxes, board, i, j, board.getMatrix()[i][j], new ArrayList<>());
 					}
 				}
 			}
 
-			return h;
+			return h - 1;
 		}
 
-		private void groupRec(boolean[][] boardAux, final Board board, int row, int col, final int color){
+		private void groupRec(boolean[][] boardAux, final Board board, int row, int col, final int color, List<ArrayList<Integer>> checked){
+            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> b = new ArrayList<>();
+            a.add(row);
+            a.add(col);
+            checked.add(a);
+
             if(board.getMatrix()[row][col] == color){
                 boardAux[row][col] = true;
 
+                b.add(row-1);
+                b.add(col);
 				//up
-				if(row>0){
-					groupRec(boardAux, board, row-1, col, color);
+				if(row>0 && !checked.contains(b)){
+					groupRec(boardAux, board, row-1, col, color, checked);
 				}
 
+                b.clear();
+                b.add(row+1);
+                b.add(col);
 				//down
-				if(row<board.getRows()-1){
-					groupRec(boardAux, board, row+1, col, color);
+				if(row<board.getRows()-1 && !checked.contains(b)){
+					groupRec(boardAux, board, row+1, col, color, checked);
 				}
 
-				//left
-				if(col>0){
-					groupRec(boardAux, board, row, col-1, color);
+                b.clear();
+                b.add(row);
+                b.add(col-1);
+                //left
+				if(col>0 && !checked.contains(b)){
+					groupRec(boardAux, board, row, col-1, color, checked);
 				}
 
-				//right
-				if(col<board.getColumns()-1){
-					groupRec(boardAux, board, row, col+1, color);
+                b.clear();
+                b.add(row);
+                b.add(col+1);
+                //right
+				if(col<board.getColumns()-1 && !checked.contains(b)){
+					groupRec(boardAux, board, row, col+1, color, checked);
 				}
 			}
 		}
@@ -82,8 +98,61 @@ public enum FillZoneHeuristic implements Heuristic {
 				if (colorRegister[i] > 0)
 					h++;
 			}
+
+			// checking if the initial color is only present on the first group
+			if(colorRegister[fillZoneState.getBoard().startingColor()] == firstGroupSize(fillZoneState.getBoard(), 0, 0, new ArrayList<>())){
+			    h--;
+            }
+
 			return h;
 		}
+
+		private int firstGroupSize(Board board, int row, int col, List<ArrayList<Integer>> checked){
+
+		    int[][] matrix = board.getMatrix();
+            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> b = new ArrayList<>();
+            a.add(row);
+            a.add(col);
+            checked.add(a);
+
+            if(board.startingColor() != matrix[row][col]){
+                return 0;
+            }
+
+            int c = 1;
+
+            b.add(row-1);
+            b.add(col);
+            //up
+            if (row > 0 && !checked.contains(b)) {
+                c += firstGroupSize(board, row - 1, col, checked);
+            }
+            b.clear();
+            b.add(row+1);
+            b.add(col);
+            //down
+            if (row < (board.getRows() - 1) && !checked.contains(b)) {
+                c += firstGroupSize(board, row + 1, col, checked);
+            }
+            b.clear();
+            b.add(row);
+            b.add(col-1);
+            //left
+            if (col > 0 && !checked.contains(b)) {
+                c += firstGroupSize(board, row, col - 1, checked);
+            }
+            b.clear();
+            b.add(row);
+            b.add(col+1);
+            //right
+            if (col < (board.getColumns() - 1) && !checked.contains(b)) {
+                c += firstGroupSize(board, row, col + 1, checked);
+            }
+
+            return c;
+        }
+
 	},
 
     /**
@@ -110,10 +179,10 @@ public enum FillZoneHeuristic implements Heuristic {
 				}
 			}
 
-			return solveTwoColorMatrix(new Board(realBoard.getRows(), realBoard.getColumns(), realBoard.getColors(), twoColorMatrix), realBoard.getRows(), realBoard.getColumns());
+			return solveTwoColorMatrix(new Board(realBoard.getRows(), realBoard.getColumns(), realBoard.getColors(), twoColorMatrix));
 		}
 
-		private int solveTwoColorMatrix(Board board, int rows, int columns){
+		private int solveTwoColorMatrix(Board board){
             int h = 0;
 
             while(!isGoal(board)){
@@ -124,29 +193,43 @@ public enum FillZoneHeuristic implements Heuristic {
             return h;
         }
 
-        private void applyColorRec(Board board, int oldColor, int row, int col, List<int[]> checked) {
-            if (board.getMatrix()[row][col] == oldColor) {
-                board.setColorAtLocker(1 - oldColor, row, col);
-                checked.add(new int[]{row, col});
+        private void applyColorRec(Board board, int oldColor, int row, int col, List<ArrayList<Integer>> checked) {
+            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> b = new ArrayList<>();
+            a.add(row);
+            a.add(col);
+            checked.add(a);
 
+            if (board.getMatrix()[row][col] == oldColor) {
+                board.setColorAtLocker(row, col, 1 - oldColor);
+
+                b.add(row-1);
+                b.add(col);
                 //up
-                if (row > 0 && !checked.contains(new int[]{row - 1, col})) {
+                if (row > 0 && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row - 1, col, checked);
                 }
+                b.clear();
+                b.add(row+1);
+                b.add(col);
                 //down
-                if (row < (board.getRows() - 1) && !checked.contains(new int[]{row + 1, col})) {
+                if (row < (board.getRows() - 1) && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row + 1, col, checked);
                 }
+                b.clear();
+                b.add(row);
+                b.add(col-1);
                 //left
-                if (col > 0 && !checked.contains(new int[]{row, col - 1})) {
+                if (col > 0 && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row, col - 1, checked);
                 }
+                b.clear();
+                b.add(row);
+                b.add(col+1);
                 //right
-                if (col < (board.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
+                if (col < (board.getColumns() - 1) && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row, col + 1, checked);
                 }
-            } else {
-                checked.add(new int[]{row, col});
             }
         }
 	},
@@ -180,7 +263,7 @@ public enum FillZoneHeuristic implements Heuristic {
 
 			//solve the two color board for a limited amount of steps
             while(steps > 0 && !isGoal(twoColorBoard)){
-                applyColorRec(twoColorBoard, twoColorBoard.startingColor(), twoColorBoard.getRows(), twoColorBoard.getColumns(), new ArrayList<>());
+                applyColorRec(twoColorBoard, twoColorBoard.startingColor(), 0, 0, new ArrayList<>());
                 steps--;
                 h++;
             }
@@ -191,67 +274,106 @@ public enum FillZoneHeuristic implements Heuristic {
 
 			//combine the two color board with the real board in order to find the amount of remaining colors
             // result at twoColorBoard
-			combineBoards(twoColorBoard, realBoard.getMatrix(), 0, 0, twoColorBoard.startingColor(), true, new ArrayList<>());
-
+			combineBoards(twoColorBoard, realBoard.getMatrix());
             return h + REMAINING_COLORS.getHValue(new FillZoneState(twoColorBoard, ((FillZoneState) state).getMoves()));
 		}
 
-        private void applyColorRec(Board board, int oldColor, int row, int col, List<int[]> checked) {
-            if (board.getMatrix()[row][col] == oldColor) {
-                board.setColorAtLocker(1 - oldColor, row, col);
-                checked.add(new int[]{row, col});
+        private void applyColorRec(Board board, int oldColor, int row, int col, List<ArrayList<Integer>> checked) {
+            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> b = new ArrayList<>();
+            a.add(row);
+            a.add(col);
+            checked.add(a);
 
+            if (board.getMatrix()[row][col] == oldColor) {
+                board.setColorAtLocker(row, col, 1 - oldColor);
+
+                b.add(row-1);
+                b.add(col);
                 //up
-                if (row > 0 && !checked.contains(new int[]{row - 1, col})) {
+                if (row > 0 && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row - 1, col, checked);
                 }
+                b.clear();
+                b.add(row+1);
+                b.add(col);
                 //down
-                if (row < (board.getRows() - 1) && !checked.contains(new int[]{row + 1, col})) {
+                if (row < (board.getRows() - 1) && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row + 1, col, checked);
                 }
+                b.clear();
+                b.add(row);
+                b.add(col-1);
                 //left
-                if (col > 0 && !checked.contains(new int[]{row, col - 1})) {
+                if (col > 0 && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row, col - 1, checked);
                 }
+                b.clear();
+                b.add(row);
+                b.add(col+1);
                 //right
-                if (col < (board.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
+                if (col < (board.getColumns() - 1) && !checked.contains(b)) {
                     applyColorRec(board, oldColor, row, col + 1, checked);
                 }
-            } else {
-                checked.add(new int[]{row, col});
             }
         }
 
-		private void combineBoards(Board twoColorBoard, int[][] realMatrix, int row, int col, int initialColor, boolean initialGroup, List<int[]> checked){
+        private void combineBoards(Board twoColorBoard, int[][] realMatrix){
+            boolean[][] groupedBoxes = new boolean[twoColorBoard.getRows()][twoColorBoard.getColumns()];
+            groupRec(groupedBoxes, twoColorBoard, 0, 0, twoColorBoard.startingColor(), new ArrayList<>());
 
-		    if(!initialGroup){
-		        twoColorBoard.setColorAtLocker(row, col, realMatrix[row][col]);
-            } else {
-                initialGroup = initialColor == twoColorBoard.getMatrix()[row][col];
-                if(!initialGroup){
-                    twoColorBoard.setColorAtLocker(row, col, realMatrix[row][col]);
+            for (int i = 0; i < twoColorBoard.getRows(); i++) {
+                for (int j = 0; j < twoColorBoard.getColumns(); j++) {
+                    if (!groupedBoxes[i][j]) {
+                        twoColorBoard.setColorAtLocker(i,j,realMatrix[i][j]);
+                    }
                 }
             }
-            checked.add(new int[]{row, col});
+        }
 
-            //up
-            if (row > 0 && !checked.contains(new int[]{row - 1, col})) {
-                combineBoards(twoColorBoard, realMatrix, row - 1, col, initialColor, initialGroup, checked);
-            }
-            //down
-            if (row < (twoColorBoard.getRows() - 1) && !checked.contains(new int[]{row + 1, col})) {
-                combineBoards(twoColorBoard, realMatrix, row + 1, col, initialColor, initialGroup, checked);
-            }
-            //left
-            if (col > 0 && !checked.contains(new int[]{row, col - 1})) {
-                combineBoards(twoColorBoard, realMatrix, row, col - 1, initialColor, initialGroup, checked);
-            }
-            //right
-            if (col < (twoColorBoard.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
-                combineBoards(twoColorBoard, realMatrix, row, col + 1, initialColor, initialGroup, checked);
-            }
 
-		}
+        private void groupRec(boolean[][] boardAux, final Board board, int row, int col, final int color, List<ArrayList<Integer>> checked){
+            ArrayList<Integer> a = new ArrayList<>();
+            ArrayList<Integer> b = new ArrayList<>();
+            a.add(row);
+            a.add(col);
+            checked.add(a);
+
+            if(board.getMatrix()[row][col] == color){
+                boardAux[row][col] = true;
+
+                b.add(row-1);
+                b.add(col);
+                //up
+                if(row>0 && !checked.contains(b)){
+                    groupRec(boardAux, board, row-1, col, color, checked);
+                }
+
+                b.clear();
+                b.add(row+1);
+                b.add(col);
+                //down
+                if(row<board.getRows()-1 && !checked.contains(b)){
+                    groupRec(boardAux, board, row+1, col, color, checked);
+                }
+
+                b.clear();
+                b.add(row);
+                b.add(col-1);
+                //left
+                if(col>0 && !checked.contains(b)){
+                    groupRec(boardAux, board, row, col-1, color, checked);
+                }
+
+                b.clear();
+                b.add(row);
+                b.add(col+1);
+                //right
+                if(col<board.getColumns()-1 && !checked.contains(b)){
+                    groupRec(boardAux, board, row, col+1, color, checked);
+                }
+            }
+        }
 	},
 
 

@@ -12,7 +12,7 @@ public class ChangeColorRule implements GPSRule {
 
 	private int color;
 
-	private List<int[]> checked = new ArrayList<>();
+	private List<ArrayList<Integer>> checked = new ArrayList<>();
 
 	public ChangeColorRule(int color) {
 		this.color = color;
@@ -49,28 +49,42 @@ public class ChangeColorRule implements GPSRule {
 	}
 
 	private void applyColorRec(Board board, int oldColor, int row, int col) {
-		if (board.getMatrix()[row][col] == oldColor) {
-			board.setColorAtLocker(color, row, col);
-			checked.add(new int[]{row, col});
+		ArrayList<Integer> a = new ArrayList<>();
+		ArrayList<Integer> b = new ArrayList<>();
+		a.add(row);
+		a.add(col);
+		checked.add(a);
 
+		if (board.getMatrix()[row][col] == oldColor) {
+			board.setColorAtLocker(row, col, color);
+
+			b.add(row-1);
+			b.add(col);
 			//up
-			if (row > 0 && !checked.contains(new int[]{row - 1, col})) {
+			if (row > 0 && !checked.contains(b)) {
 				applyColorRec(board, oldColor, row - 1, col);
 			}
+			b.clear();
+			b.add(row+1);
+			b.add(col);
 			//down
-			if (row < (board.getRows() - 1) && !checked.contains(new int[]{row + 1, col})) {
+			if (row < (board.getRows() - 1) && !checked.contains(b)) {
 				applyColorRec(board, oldColor, row + 1, col);
 			}
+			b.clear();
+			b.add(row);
+			b.add(col-1);
 			//left
-			if (col > 0 && !checked.contains(new int[]{row, col - 1})) {
+			if (col > 0 && !checked.contains(b)) {
 				applyColorRec(board, oldColor, row, col - 1);
 			}
+			b.clear();
+			b.add(row);
+			b.add(col+1);
 			//right
-			if (col < (board.getColumns() - 1) && !checked.contains(new int[]{row, col + 1})) {
+			if (col < (board.getColumns() - 1) && !checked.contains(b)) {
 				applyColorRec(board, oldColor, row, col + 1);
 			}
-		} else {
-			checked.add(new int[]{row, col});
 		}
 	}
 
