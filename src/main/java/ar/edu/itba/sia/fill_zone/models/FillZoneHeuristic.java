@@ -96,7 +96,7 @@ public enum FillZoneHeuristic implements Heuristic {
 			final FillZoneState fillZoneState = (FillZoneState) state;
 			Board realBoard = fillZoneState.getBoard();
 
-			if(isGoal(fillZoneState.getBoard())){
+			if(isGoal(realBoard)){
 				return 0;
 			}
 
@@ -277,17 +277,24 @@ public enum FillZoneHeuristic implements Heuristic {
 
 	;
 
-    //TODO: nati hace esto
+	/**
+	 *
+	 * @param board
+	 * @return a boolean value indicating if the board has reached a winning state.
+	 */
 	public boolean isGoal(Board board) {
-		for (int row = 0; row < board.getRows(); row++) {
-			for (int col = 0; col < board.getColumns(); col++) {
-				if (board.getMatrix()[row][col] != board.startingColor()) {
+		final int[] colors = board.getAmountOfEachColor();
+		boolean oneColor = false;
+		for(int i = 0; i<colors.length; i++){
+			if(colors[i] != 0){
+				if(colors[i] == board.getColumns()*board.getRows() && !oneColor){
+					oneColor = true;
+				}else{
 					return false;
 				}
 			}
 		}
-		return true;
+		return oneColor;
 	}
-
 
 }
