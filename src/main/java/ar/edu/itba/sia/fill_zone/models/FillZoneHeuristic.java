@@ -3,6 +3,7 @@ package ar.edu.itba.sia.fill_zone.models;
 import ar.edu.itba.sia.fill_zone.models.interfaces.Heuristic;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,37 @@ public enum FillZoneHeuristic implements Heuristic {
 		}
 
 	},
+
+    /**
+     * Amount of lockers in the board that have not been painted in the current color
+     * Non admissible heuristic
+     */
+    REMAINING_LOCKERS(){
+        @Override
+        public Integer getHValue(GPSState state) {
+            FillZoneState fillZoneState = (FillZoneState) state;
+            Board board = fillZoneState.getBoard();
+            return board.getRows()*board.getColumns() - paintedLockers(board, board.getMatrix()[0][0], 0, 0, new ArrayList<Point>());
+        }
+
+        private int paintedLockers(Board board, int color, int row, int col, List<Point> checked){
+
+            if(row >= board.getRows() || col >= board.getColumns() || col<0 || row < 0 || board.getMatrix()[row][col] != color){
+                return 0;
+            }
+
+            if(!checked.contains(new Point(row, col))){
+                checked.add(new Point(row,col));
+                return 1 + paintedLockers(board, color, row+1, col, checked) + paintedLockers(board, color, row, col+1, checked) + paintedLockers(board, color, row, col-1, checked)
+                        + paintedLockers(board, color, row-1, col, checked) ;
+            }
+
+            return 0;
+
+
+        }
+    },
+
 
 	/**
 	 * Amount of colors remaining in the board.
