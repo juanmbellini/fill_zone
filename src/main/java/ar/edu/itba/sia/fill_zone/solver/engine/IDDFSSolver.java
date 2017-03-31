@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Juan Marcos Bellini on 30/3/17.
  */
-public class IDDFSSolver extends Solver {
+public final class IDDFSSolver extends Solver {
 
 	private long actualDepth;
 
@@ -74,7 +74,7 @@ public class IDDFSSolver extends Solver {
 
 
 	@Override
-	protected void clearSolver() {
+	protected final void clearSolver() {
 		super.clearSolver();
 		actualDepth = 0;
 		completeGraph = false;

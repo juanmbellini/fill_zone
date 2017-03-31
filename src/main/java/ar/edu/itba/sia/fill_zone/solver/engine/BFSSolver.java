@@ -7,7 +7,7 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
  * <p>
  * Created by Juan Marcos Bellini on 30/3/17.
  */
-public class BFSSolver extends DequeSimpleSolver {
+public final class BFSSolver extends DequeSimpleSolver {
 
 
 	/**

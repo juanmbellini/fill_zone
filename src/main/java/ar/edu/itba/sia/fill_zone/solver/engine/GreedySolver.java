@@ -5,7 +5,7 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 /**
  * Created by Juan Marcos Bellini on 30/3/17.
  */
-public class GreedySolver extends PriorityQueueSolver {
+public final class GreedySolver extends PriorityQueueSolver {
 
 
 	/**

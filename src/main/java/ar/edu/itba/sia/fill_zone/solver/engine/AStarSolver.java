@@ -7,7 +7,7 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
  * <p>
  * Created by Juan Marcos Bellini on 30/3/17.
  */
-public class AStarSolver extends PriorityQueueSolver {
+public final class AStarSolver extends PriorityQueueSolver {
 
 
 	/**
