@@ -32,11 +32,6 @@ public abstract class DequeSimpleSolver extends SimpleSolver {
 		return deque;
 	}
 
-	@Override
-	protected void clearSolver() {
-		super.clearSolver();
-		deque.clear();
-	}
 
 	@Override
 	public List<GPSNode> getOpenedNodes() {

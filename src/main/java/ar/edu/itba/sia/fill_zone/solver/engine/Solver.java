@@ -58,7 +58,7 @@ public abstract class Solver {
 		this.problem = problem;
 		this.initialNode = new GPSNode(problem.getInitState(), 0, null, null);
 		this.bestCosts = new HashMap<>();
-		clearSolver();
+		clearVariables();
 	}
 
 
@@ -75,6 +75,14 @@ public abstract class Solver {
 	 * or an empty list if no solution is reached.
 	 */
 	public abstract List<GPSNode> getOpenedNodes();
+
+
+	/**
+	 * Sets the solver in a state in which it can start solving the problem.
+	 */
+	protected void clearSolver() {
+		clearVariables();
+	}
 
 
 	/**
@@ -131,15 +139,6 @@ public abstract class Solver {
 		return explosionCounter;
 	}
 
-	/**
-	 * Sets the solver in a state in which it can start solving the problem.
-	 */
-	protected void clearSolver() {
-		finished = false;
-		failed = false;
-		solutionNode = null;
-		explosionCounter = 0;
-	}
 
 	/**
 	 * v * Checks if the given node was reached.
@@ -208,6 +207,18 @@ public abstract class Solver {
 	protected void succeed(GPSNode solutionNode) {
 		finished = true;
 		this.solutionNode = solutionNode;
+	}
+
+
+	/**
+	 * Sets all variables into the default state.
+	 */
+	private void clearVariables() {
+		finished = false;
+		failed = false;
+		solutionNode = null;
+		explosionCounter = 0;
+		bestCosts.clear();
 	}
 
 

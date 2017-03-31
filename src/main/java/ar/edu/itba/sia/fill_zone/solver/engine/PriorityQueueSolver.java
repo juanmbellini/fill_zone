@@ -39,11 +39,6 @@ public abstract class PriorityQueueSolver extends SimpleSolver {
 		applyRules(node).forEach(priorityQueue::add);
 	}
 
-	@Override
-	protected void clearSolver() {
-		super.clearSolver();
-		priorityQueue.clear();
-	}
 
 	@Override
 	public List<GPSNode> getOpenedNodes() {

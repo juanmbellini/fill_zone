@@ -19,6 +19,7 @@ public abstract class SimpleSolver extends Solver {
 	 */
 	protected SimpleSolver(GPSProblem problem) {
 		super(problem);
+		clearSolver();
 	}
 
 	/**
@@ -63,9 +64,12 @@ public abstract class SimpleSolver extends Solver {
 	}
 
 	@Override
-	protected void clearSolver() {
+	protected final void clearSolver() {
 		super.clearSolver();
-		this.getQueue().clear();
+		Queue<GPSNode> queue = this.getQueue();
+		if (queue != null) {
+			queue.clear();
+		}
 	}
 
 
