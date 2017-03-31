@@ -47,6 +47,6 @@ public abstract class PriorityQueueSolver extends SimpleSolver {
 
 	@Override
 	protected boolean mustExplode(GPSNode node) {
-		return !isBest(node, node.getCost());
+		return isBest(node, node.getCost());
 	}
 }
