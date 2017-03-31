@@ -2,8 +2,8 @@ package ar.edu.itba.sia.fill_zone;
 
 import ar.edu.itba.sia.fill_zone.models.FillZoneHeuristic;
 import ar.edu.itba.sia.fill_zone.models.FillZoneProblem;
-import ar.edu.itba.sia.fill_zone.solver.GPSEngine;
-import ar.edu.itba.sia.fill_zone.solver.SearchStrategy;
+import ar.edu.itba.sia.fill_zone.solver.engine.GPSEngine;
+import ar.edu.itba.sia.fill_zone.solver.engine.SearchStrategy;
 
 /**
  * Main class!
