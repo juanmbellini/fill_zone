@@ -22,11 +22,11 @@ public final class GreedySolver extends PriorityQueueSolver {
 			}
 
 			int hValueDiff = problem.getHValue(o1.getState()) - problem.getHValue(o2.getState());
-			if(hValueDiff == 0){
+			if (hValueDiff == 0) {
 				Random random = new Random();
 				return (random.nextInt(2)) == 0 ? 1 : -1;
 			}
-			return  hValueDiff;
+			return hValueDiff;
 		});
 	}
 }

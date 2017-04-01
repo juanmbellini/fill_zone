@@ -177,7 +177,6 @@ public abstract class Solver {
 	 */
 	protected List<GPSNode> applyRules(GPSNode node) {
 		explosionCounter++;
-//		updateBest(node);
 		final List<GPSNode> candidates = new LinkedList<>();
 		problem.getRules().forEach(rule -> {
 			Optional<GPSState> newState = rule.evalRule(node.getState());

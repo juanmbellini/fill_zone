@@ -12,7 +12,6 @@ public final class IDDFSSolver extends Solver {
 
 	private long actualDepth;
 
-	private boolean completeGraph;
 
 
 	/**
@@ -30,7 +29,7 @@ public final class IDDFSSolver extends Solver {
 	public void findSolution() {
 		clearSolver();
 
-		while (actualDepth <= Long.MAX_VALUE /*!completeGraph*/) {
+		while (actualDepth < Long.MAX_VALUE) {
 //			getBestCosts().clear(); // Remove costs in order to set as not reached all nodes
 			IDDFSNode result = recursiveSolve(new IDDFSNode(initialNode), 0);
 			if (result != null) {
@@ -59,10 +58,11 @@ public final class IDDFSSolver extends Solver {
 		for (IDDFSNode child : children) {
 			IDDFSNode result = recursiveSolve(child, depth + 1);
 			if (result != null) {
+				updateBest(result.getGPSNode());
 				return result;
 			}
 		}
-		node.unmark();
+		node.unMark();
 		return null;
 	}
 
@@ -77,7 +77,6 @@ public final class IDDFSSolver extends Solver {
 	protected final void clearSolver() {
 		super.clearSolver();
 		actualDepth = 0;
-		completeGraph = false;
 	}
 
 
@@ -106,7 +105,7 @@ public final class IDDFSSolver extends Solver {
 			this.marked = true;
 		}
 
-		private void unmark() {
+		private void unMark() {
 			this.marked = false;
 		}
 

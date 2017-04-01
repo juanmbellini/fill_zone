@@ -23,15 +23,16 @@ public final class AStarSolver extends PriorityQueueSolver {
 				throw new IllegalArgumentException();
 			}
 
-            int fValueDiff = (o1.getCost() + problem.getHValue(o1.getState())) - (o2.getCost() + problem.getHValue(o2.getState()));
-            if(fValueDiff == 0){
-                int hValueDiff = problem.getHValue(o1.getState()) - problem.getHValue(o2.getState());
-                if(hValueDiff == 0){
-                    Random random = new Random();
-                    return (random.nextInt(2)) == 0 ? 1 : -1;
-                }
-                return  hValueDiff;
-            }
+			int fValueDiff = (o1.getCost() + problem.getHValue(o1.getState()))
+					- (o2.getCost() + problem.getHValue(o2.getState()));
+			if (fValueDiff == 0) {
+				int hValueDiff = problem.getHValue(o1.getState()) - problem.getHValue(o2.getState());
+				if (hValueDiff == 0) {
+					Random random = new Random();
+					return (random.nextInt(2)) == 0 ? 1 : -1;
+				}
+				return hValueDiff;
+			}
 			return fValueDiff;
 		});
 	}
