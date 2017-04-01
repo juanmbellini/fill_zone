@@ -1,8 +1,12 @@
 package ar.edu.itba.sia.fill_zone;
 
+import ar.edu.itba.sia.fill_zone.io.BoardReader;
+import ar.edu.itba.sia.fill_zone.models.Board;
 import ar.edu.itba.sia.fill_zone.models.FillZoneHeuristic;
 import ar.edu.itba.sia.fill_zone.models.FillZoneProblem;
+import ar.edu.itba.sia.fill_zone.models.FillZoneState;
 import ar.edu.itba.sia.fill_zone.solver.engine.GPSEngine;
+import ar.edu.itba.sia.fill_zone.solver.engine.GPSNode;
 import ar.edu.itba.sia.fill_zone.solver.engine.SearchStrategy;
 
 /**
@@ -31,11 +35,27 @@ public class Main {
 			System.out.print("Now processing the problem... ");
 			engine.findSolution();
 			System.out.println("Finished");
-			// TODO: print solution according to the selected output
 		} catch (Throwable e) {
 			System.err.println(USAGE_MESSAGE);
 			System.exit(1);
 		}
+	}
+
+	private static void printNodes(GPSNode node){
+		if(node == null){
+			return;
+		}
+		printNodes(node.getParent());
+		final FillZoneState state = (FillZoneState) node.getState();
+		state.getBoard().printBoard();
+		System.out.println("----------");
+	}
+
+	private static int nodeCount(GPSNode node){
+		if(node == null){
+			return 0;
+		}
+		return 1 + nodeCount(node.getParent());
 	}
 
 }
