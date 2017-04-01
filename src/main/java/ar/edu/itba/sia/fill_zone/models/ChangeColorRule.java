@@ -4,6 +4,7 @@ package ar.edu.itba.sia.fill_zone.models;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSRule;
 import ar.edu.itba.sia.fill_zone.solver.api.GPSState;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +13,7 @@ public class ChangeColorRule implements GPSRule {
 
 	private int color;
 
-	private List<ArrayList<Integer>> checked = new ArrayList<>();
+	private List<Point> checked = new ArrayList<>();
 
 	public ChangeColorRule(int color) {
 		this.color = color;
@@ -49,40 +50,29 @@ public class ChangeColorRule implements GPSRule {
 	}
 
 	private void applyColorRec(Board board, int oldColor, int row, int col) {
-		ArrayList<Integer> a = new ArrayList<>();
-		ArrayList<Integer> b = new ArrayList<>();
-		a.add(row);
-		a.add(col);
-		checked.add(a);
+
+		checked.add(new Point(row, col));
 
 		if (board.getMatrix()[row][col] == oldColor) {
 			board.setColorAtLocker(row, col, color);
 
-			b.add(row-1);
-			b.add(col);
 			//up
-			if (row > 0 && !checked.contains(b)) {
+			if (row > 0 && !checked.contains(new Point(row-1, col))) {
 				applyColorRec(board, oldColor, row - 1, col);
 			}
-			b.clear();
-			b.add(row+1);
-			b.add(col);
+
 			//down
-			if (row < (board.getRows() - 1) && !checked.contains(b)) {
+			if (row < (board.getRows() - 1) && !checked.contains(new Point(row+1, col))) {
 				applyColorRec(board, oldColor, row + 1, col);
 			}
-			b.clear();
-			b.add(row);
-			b.add(col-1);
+
 			//left
-			if (col > 0 && !checked.contains(b)) {
+			if (col > 0 && !checked.contains(new Point(row, col-1))) {
 				applyColorRec(board, oldColor, row, col - 1);
 			}
-			b.clear();
-			b.add(row);
-			b.add(col+1);
+
 			//right
-			if (col < (board.getColumns() - 1) && !checked.contains(b)) {
+			if (col < (board.getColumns() - 1) && !checked.contains(new Point(row, col+1))) {
 				applyColorRec(board, oldColor, row, col + 1);
 			}
 		}
