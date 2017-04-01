@@ -93,11 +93,21 @@ public class FillZoneProblem implements GPSProblem {
 		return oneColor;
 	}
 
+	/**
+	 *
+	 * @return a List containing the rules.
+	 */
 	@Override
 	public List<GPSRule> getRules() {
 		return rules;
 	}
 
+
+	/**
+	 *
+	 * @param state The state where the Heuristic should be computed.
+	 * @return the heuristic value
+	 */
 	@Override
 	public Integer getHValue(GPSState state) {
 		return heuristic.getHValue(state);
