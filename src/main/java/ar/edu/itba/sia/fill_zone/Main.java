@@ -48,21 +48,4 @@ public class Main {
 		System.out.println("nodos explotados " + engine.getExplosionCounter());
 	}
 
-	private static void printNodes(GPSNode node){
-		if(node == null){
-			return;
-		}
-		printNodes(node.getParent());
-		final FillZoneState state = (FillZoneState) node.getState();
-		state.getBoard().printBoard();
-		System.out.println("----------");
-	}
-
-	private static int nodeCount(GPSNode node){
-		if(node == null){
-			return 0;
-		}
-		return 1 + nodeCount(node.getParent());
-	}
-
 }

@@ -31,7 +31,7 @@ public class BoardReader {
 	 *
 	 * @param path The path to the file.
 	 * @return The read board.
-	 * @throws IOException If an I/O error occurs while reading the file.
+	 * @throws IOException               If an I/O error occurs while reading the file.
 	 * @throws WrongBoardFormatException If file's format is incorrect.
 	 */
 	public static Board readBoard(String path) throws IOException, WrongBoardFormatException {
@@ -51,22 +51,22 @@ public class BoardReader {
 		}
 		final int[][] matrix = new int[rows][columns];
 
-        for (int row = 0; row < rows; row++){
-            final String[] line = lines.remove(0).split(" ");
-            // Checks if the amount of columns is the specified in headers.
-            if (line.length != columns) {
-                throw new WrongBoardFormatException();
-            }
+		IntStream.range(0, rows).forEach(row -> {
+			final String[] line = lines.remove(0).trim().split("\\s+");
+			// Checks if the amount of columns is the specified in headers.
+			if (line.length != columns) {
+				throw new WrongBoardFormatException();
+			}
+			IntStream.range(0, columns).forEach(col -> {
+				int color = Integer.parseInt(line[col]);
+				// Checks that the color is not greater than the specified in headers or negative.
+				if (color >= colors || colors < 0) {
+					throw new WrongBoardFormatException();
+				}
+				matrix[row][col] = color;
+			});
 
-            for (int col = 0; col < columns; col++){
-                int color = Integer.parseInt(line[col]);
-                // Checks that the color is not greater than the specified in headers or negative.
-                if (color >= colors || colors < 0) {
-                    throw new WrongBoardFormatException();
-                }
-                matrix[row][col] = color;
-            }
-        }
+		});
 
 		return new Board(rows, columns, colors, matrix);
 	}

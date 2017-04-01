@@ -68,32 +68,6 @@ public class Board {
 
 
 	/**
-	 * Prints the board.
-	 * If the board has less than 9 colors, then it will print it with colors. Otherwise, it will print it in black.
-	 */
-	public void printBoard() {
-
-		if (colors > ColorsCode.values().length) {
-			for (int i = 0; i < rows; i++) {
-				for (int j = 0; j < columns; j++) {
-					System.out.print(matrix[i][j] + "\t");
-				}
-				System.out.println();
-			}
-
-		} else {
-			for (int i = 0; i < rows; i++) {
-				for (int j = 0; j < columns; j++) {
-					System.out.print(ColorsCode.values()[matrix[i][j]] + "" + matrix[i][j] + "\t" + ColorsCode.RESET);
-				}
-				System.out.println();
-			}
-
-
-		}
-	}
-
-	/**
 	 * @return the first color in the board, top left.
 	 */
 	public int startingColor() {
@@ -261,30 +235,4 @@ public class Board {
 	}
 
 
-	//ColorsCode that will be used to print the board in the standard output
-	private enum ColorsCode {
-		RESET("\u001B[0m"),
-		ONE("\u001B[31m"),
-		TWO("\u001B[36m"),
-		THREE("\u001B[34m"),
-		FOUR("\u001B[35m"),
-		FIVE("\u001B[38m"),
-		SIX("\u001B[33m"),
-		SEVEN("\u001B[32m"),
-		EIGHT("\u001B[38m"),
-		NINE("\u001B[30m"),
-
-		;
-
-		private final String color;
-
-		ColorsCode(String colorI) {
-			color = colorI;
-		}
-
-		public String toString() {
-			return this.color;
-		}
-
-	}
 }
