@@ -36,6 +36,7 @@ public enum FillZoneHeuristic implements Heuristic {
 
 	},
 
+
     /**
      * Amount of lockers in the board that have not been painted in the current color
      * Non admissible heuristic
@@ -130,6 +131,7 @@ public enum FillZoneHeuristic implements Heuristic {
 
 	},
 
+
     /**
      * Exact solution for a two color board.
 	 * Admissible Heuristic.
@@ -167,9 +169,8 @@ public enum FillZoneHeuristic implements Heuristic {
 
             return h;
         }
-	}
+	},
 
-,
 
 	/**
 	 * Solve for a number of steps as if only two colors existed, and then check how many colors remain.

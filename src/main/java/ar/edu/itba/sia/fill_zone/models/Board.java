@@ -35,11 +35,6 @@ public class Board {
 	 */
 	private final int[] amountOfEachColor;
 
-	/**
-	 * Matrix that has true value in the first group lockers and false in the others.
-	 */
-	private final boolean[][] booleanMatrix;
-
 
 	/**
 	 * Constructor.
@@ -55,7 +50,6 @@ public class Board {
 		this.colors = colors;
 		this.matrix = matrix;
 		this.amountOfEachColor = new int[colors];
-		this.booleanMatrix = new boolean[rows][columns];
 
 		for (int row = 0; row < rows; row++) {
 			for (int col = 0; col < columns; col++) {
@@ -63,7 +57,6 @@ public class Board {
 			}
 		}
 
-		paintBooleanMatrix(0, 0, startingColor(), new ArrayList<>());
 	}
 
 
@@ -135,70 +128,6 @@ public class Board {
 	 */
 	public int[] getAmountOfEachColor() {
 		return amountOfEachColor.clone();
-	}
-
-	public Set<Integer> getFrontierColors(){
-		paintBooleanMatrix(0, 0, startingColor(), new ArrayList<>());
-		Set<Integer> ret = new HashSet<>();
-		getFrontierColorsRec(0, 0, ret, new ArrayList<>());
-		return ret;
-	}
-
-	private void getFrontierColorsRec(int row, int column, Set<Integer> frontierColors, List<Point> checked){
-		checked.add(new Point(row, column));
-
-		if(booleanMatrix[row][column]){
-			//up
-			if (row > 0 && !checked.contains(new Point(row-1, column))) {
-				getFrontierColorsRec(row - 1, column, frontierColors, checked);
-			}
-
-			//down
-			if (row < (rows - 1) && !checked.contains(new Point(row+1, column))) {
-				getFrontierColorsRec(row + 1, column, frontierColors, checked);
-			}
-
-			//left
-			if (column > 0 && !checked.contains(new Point(row, column-1))) {
-				getFrontierColorsRec(row, column - 1, frontierColors, checked);
-			}
-
-			//right
-			if (column < (columns - 1) && !checked.contains(new Point(row, column+1))) {
-				getFrontierColorsRec(row, column + 1, frontierColors, checked);
-			}
-		} else {
-			frontierColors.add(matrix[row][column]);
-		}
-	}
-
-
-	private void paintBooleanMatrix(int row, int column, int color, List<Point> checked){
-		checked.add(new Point(row, column));
-
-		if(matrix[row][column] == color){
-			booleanMatrix[row][column] = true;
-
-			//up
-			if(row>0 && !checked.contains(new Point(row - 1, column))){
-				paintBooleanMatrix(row - 1, column, color, checked);
-			}
-
-			//down
-			if(row<rows-1 && !checked.contains(new Point(row + 1, column))){
-				paintBooleanMatrix(row + 1, column, color, checked);
-			}
-
-			//left
-			if(column>0 && !checked.contains(new Point(row, column - 1))){
-				paintBooleanMatrix(row, column - 1, color, checked);
-			}
-
-			//right
-			if(column<columns-1 && !checked.contains(new Point(row, column + 1))){
-				paintBooleanMatrix(row, column + 1, color, checked);
-			}
-		}
 	}
 
 

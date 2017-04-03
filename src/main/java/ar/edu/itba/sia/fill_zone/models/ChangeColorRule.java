@@ -34,7 +34,7 @@ public class ChangeColorRule implements GPSRule {
 		FillZoneState fillZoneState = (FillZoneState) state;
 		Board oldBoard = fillZoneState.getBoard();
 
-		if (color == oldBoard.startingColor() || oldBoard.getAmountOfEachColor()[color] == 0 || !oldBoard.getFrontierColors().contains(color)) {
+		if (color == oldBoard.startingColor()) {
 			return Optional.empty();
 		}
 
