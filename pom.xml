@@ -16,11 +16,19 @@
 
 		<!-- Versions -->
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+		<com.beust.jcommander.version>1.60</com.beust.jcommander.version>
 		<org.junit.version>4.12</org.junit.version>
 	</properties>
 
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>${com.beust.jcommander.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
