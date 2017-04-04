@@ -1,8 +1,6 @@
 package ar.edu.itba.sia.fill_zone.models;
 
-import java.awt.*;
-import java.util.*;
-import java.util.List;
+import java.util.Arrays;
 import java.util.stream.IntStream;
 
 /**
