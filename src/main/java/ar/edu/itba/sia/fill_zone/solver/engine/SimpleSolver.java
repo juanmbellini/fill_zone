@@ -6,8 +6,6 @@ import java.util.Queue;
 
 /**
  * A simple solver that partially implements some algorithms that share some logic (DFS, BFS, GREEDY and A*).
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public abstract class SimpleSolver extends Solver {
 

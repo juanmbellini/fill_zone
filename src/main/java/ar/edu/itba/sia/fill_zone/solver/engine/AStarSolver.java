@@ -6,8 +6,6 @@ import java.util.Random;
 
 /**
  * Class implementing the A* searching strategy.
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public final class AStarSolver extends PriorityQueueSolver {
 

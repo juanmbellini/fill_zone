@@ -4,8 +4,6 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 
 /**
  * Class implementing the DFS searching strategy.
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public final class DFSSolver extends DequeSimpleSolver {
 

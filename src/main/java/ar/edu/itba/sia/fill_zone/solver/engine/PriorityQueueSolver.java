@@ -7,8 +7,6 @@ import java.util.*;
 /**
  * A simple solver that uses a {@link PriorityQueue} as the queue that holds the opened nodes.
  * Greedy and A* solvers must extend this class, indicating how to compare the "priority" of each node.
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public abstract class PriorityQueueSolver extends SimpleSolver {
 

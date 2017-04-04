@@ -2,6 +2,9 @@ package ar.edu.itba.sia.fill_zone.solver.engine;
 
 import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 
+/**
+ * Different search strategy algorithm types
+ */
 public enum SearchStrategy {
 	BFS {
 		@Override

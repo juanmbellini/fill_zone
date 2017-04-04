@@ -7,8 +7,6 @@ import java.util.*;
 /**
  * A simple solver that uses a {@link Deque} as the queue that holds the opened nodes.
  * DFS and BFS solvers must extend this class.
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public abstract class DequeSimpleSolver extends SimpleSolver {
 

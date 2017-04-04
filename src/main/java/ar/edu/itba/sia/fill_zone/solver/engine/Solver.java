@@ -8,8 +8,6 @@ import java.util.*;
 /**
  * Class representing a problem solver.
  * This class must be extended in order to implement different types of solving strategies (i.e. searching algorithms)
- * <p>
- * Created by Juan Marcos Bellini on 30/3/17.
  */
 public abstract class Solver {
 

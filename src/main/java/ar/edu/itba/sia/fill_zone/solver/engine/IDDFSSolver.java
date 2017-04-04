@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Created by Juan Marcos Bellini on 30/3/17.
+ * Class implementing the IDDFS searching strategy.
  */
 public final class IDDFSSolver extends Solver {
 

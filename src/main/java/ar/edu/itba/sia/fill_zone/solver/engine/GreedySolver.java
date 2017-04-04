@@ -5,7 +5,7 @@ import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 import java.util.Random;
 
 /**
- * Created by Juan Marcos Bellini on 30/3/17.
+ * Class implementing the Greedy searching strategy.
  */
 public final class GreedySolver extends PriorityQueueSolver {
 
