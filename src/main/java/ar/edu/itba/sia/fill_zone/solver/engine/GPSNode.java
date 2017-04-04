@@ -21,7 +21,7 @@ public class GPSNode {
 	private final Integer cost;
 
 	/**
-	 * The rule appplied from the parent node to give origin to this node.
+	 * The rule applied from the parent node to give origin to this node.
 	 */
 	private final GPSRule generationRule;
 
