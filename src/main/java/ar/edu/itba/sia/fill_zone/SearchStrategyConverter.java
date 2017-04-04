@@ -21,7 +21,7 @@ public class SearchStrategyConverter implements IStringConverter<SearchStrategy>
 			StringBuilder str = new StringBuilder().append("Possible values are ");
 			int i = 0;
 			List<String> values = Arrays.stream(SearchStrategy.values())
-					.map(each -> each.toString().toLowerCase())
+					.map(each -> each.toString().replace('_', '-').toLowerCase())
 					.collect(Collectors.toList());
 			str.append(values.get(i++));
 			while (i < values.size()) {

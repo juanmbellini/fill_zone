@@ -21,6 +21,11 @@ public enum SearchStrategy {
 		Solver createSolver(GPSProblem problem) {
 			return new IDDFSSolver(problem);
 		}
+	}, IDDFS_BORDER {
+		@Override
+		Solver createSolver(GPSProblem problem) {
+			return new IDDFSBorderSolver(problem);
+		}
 	}, GREEDY {
 		@Override
 		Solver createSolver(GPSProblem problem) {
@@ -43,6 +48,6 @@ public enum SearchStrategy {
 	abstract Solver createSolver(GPSProblem problem);
 
 	public static SearchStrategy fromString(String name) {
-		return valueOf(name.toUpperCase());
+		return valueOf(name.replace('-', '_').toUpperCase());
 	}
 }
