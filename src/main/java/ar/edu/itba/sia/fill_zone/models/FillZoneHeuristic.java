@@ -256,6 +256,25 @@ public enum FillZoneHeuristic implements Heuristic {
 
 	;
 
+	public static FillZoneHeuristic fromString(String name) {
+		switch (name.toLowerCase().trim()) {
+			case "remaining-groups":
+				return REMAINING_GROUPS;
+			case "remaining-lockers":
+				return REMAINING_LOCKERS;
+			case "remaining-colors":
+				return REMAINING_COLORS;
+			case "two-colors":
+				return TWO_COLORS;
+			case "combined":
+				return COMBINED_TWO_COLORS_AND_REMAINING_COLORS;
+			case "max-admissible":
+				return MAX_ADMISSIBLE;
+			default:
+				throw new IllegalArgumentException();
+		}
+	}
+
 	/**
 	 * Checks if the board has reached a goal state.
      *
@@ -336,5 +355,7 @@ public enum FillZoneHeuristic implements Heuristic {
             }
         }
     }
+
+
 }
 
