@@ -57,10 +57,12 @@ public class Main {
 	 * Execution parameters
 	 */
 
-	@Parameter(names = {"-h", "--heuristic",}, description = "Heuristic to use.")
+	@Parameter(names = {"-h", "--heuristic",}, description = "Heuristic to use.",
+			converter = FillZoneHeuristicConverter.class)
 	private FillZoneHeuristic heuristic = FillZoneHeuristic.REMAINING_COLORS;
 
-	@Parameter(names = {"-s", "--strategy",}, description = "Searching strategy.")
+	@Parameter(names = {"-s", "--strategy",}, description = "Searching strategy.",
+			converter = SearchStrategyConverter.class)
 	private SearchStrategy strategy = SearchStrategy.ASTAR;
 
 
@@ -94,7 +96,8 @@ public class Main {
 
 
 	@Parameter(names = {"-i", "--input",}, description = "Path to the board file to solve.")
-	private String pathToBoard = System.getProperty("user.dir") + File.separator + "Board.brd";;
+	private String pathToBoard = System.getProperty("user.dir") + File.separator + "Board.brd";
+	;
 
 	@Parameter(names = {"-b", "--board-number",}, description = "Number of board to solve.",
 			validateWith = NumberOfBoardValidator.class)
