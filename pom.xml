@@ -16,11 +16,19 @@
 
 		<!-- Versions -->
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
+		<com.beust.jcommander.version>1.60</com.beust.jcommander.version>
 		<org.junit.version>4.12</org.junit.version>
 	</properties>
 
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>${com.beust.jcommander.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -31,7 +39,18 @@
 
 
 	<build>
+		<finalName>Fill-Zone-Solver</finalName>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources/boards</directory>
+				<includes>
+					<include>Board*.brd</include>
+				</includes>
+			</resource>
+		</resources>
+
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -55,6 +74,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<appendAssemblyId>false</appendAssemblyId>
+					<attach>false</attach>
 				</configuration>
 				<executions>
 					<execution>
