@@ -12,6 +12,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -43,6 +44,11 @@ public class Main {
 
 	private static final String SOLUTION_OUTPUT_PARAMETER_ERROR_MESSAGE =
 			"A path to a file must be specified with save solution to file option.";
+
+	private static final int DEFAULT_ROWS = 8;
+	private static final int DEFAULT_COLUMNS = 8;
+	private static final int DEFAULT_COLORS = 8;
+	private static final int DEFAULT_BOARD_NUMBER = 6;
 
 
 
@@ -76,27 +82,27 @@ public class Main {
 
 	@Parameter(names = {"-r", "--rows",}, description = "Amount of rows for the random board.",
 			validateWith = PositiveNumberValidator.class)
-	private Integer rows = 8;
+	private Integer rows = DEFAULT_ROWS;
 
 	@Parameter(names = {"-c", "--columns",}, description = "Amount of columns for the random board.",
 			validateWith = PositiveNumberValidator.class)
-	private Integer columns = 8;
+	private Integer columns = DEFAULT_COLUMNS;
 
 	@Parameter(names = {"-x", "--colors",}, description = "Amount of colors for the random board.",
 			validateWith = PositiveNumberValidator.class)
-	private Integer colors = 8;
+	private Integer colors = DEFAULT_COLORS;
 
 
 	@Parameter(names = {"-i", "--input",}, description = "Path to the board file to solve.")
-	private String pathToBoard = null;
+	private String pathToBoard = System.getProperty("user.dir") + File.separator + "Board.brd";;
 
 	@Parameter(names = {"-b", "--board-number",}, description = "Number of board to solve.",
 			validateWith = NumberOfBoardValidator.class)
-	private Integer boardNumber = null;
+	private Integer boardNumber = DEFAULT_BOARD_NUMBER;
 
 
 	@Parameter(names = {"-o", "--output"}, description = "Path of the solution file.")
-	private String solutionFilePath = null;
+	private String solutionFilePath = System.getProperty("user.dir") + File.separator + "solution.txt";
 
 
 	public static void main(String[] args) {
@@ -104,6 +110,15 @@ public class Main {
 		Main main = new Main();
 		try {
 			new JCommander(main, args);
+
+			// Default value for input
+			if (!main.inputOptionIsSpecified()) {
+				main.random = true;
+			}
+			// Default value for output
+			if (!main.outputOptionIsSpecified()) {
+				main.console = true;
+			}
 			main.execute();
 		} catch (IOException e) {
 			System.err.println("Couldn't open board file in path " + main.boardNumber + ".");
@@ -158,7 +173,7 @@ public class Main {
 	private void globalValidationOfParameters() throws ParameterException {
 
 		// Check at least one input is specified
-		if (!inputOptionSpecifiedAsBoolean()) {
+		if (!inputOptionIsSpecified()) {
 			throw new ParameterException(MISSING_INPUT_ERROR_MESSAGE);
 		}
 		// Check no more than one input is specified
@@ -181,7 +196,7 @@ public class Main {
 		}
 
 		// Check at least one output is specified
-		if (!outputOptionSpecifiedAsBoolean()) {
+		if (!outputOptionIsSpecified()) {
 			throw new ParameterException(MISSING_OUTPUT_ERROR_MESSAGE);
 		}
 		// Check no more than one output is specified
@@ -203,7 +218,7 @@ public class Main {
 	 * @return {@code true} if at least one input parameters (i.e. random, file or stored) is specified,
 	 * or {@code false} otherwise.
 	 */
-	private boolean inputOptionSpecifiedAsBoolean() {
+	private boolean inputOptionIsSpecified() {
 		return random || file || stored;
 	}
 
@@ -240,7 +255,7 @@ public class Main {
 	 * @return {@code true} if at least one output parameters (i.e. console or file) is specified,
 	 * or {@code false} otherwise.
 	 */
-	private boolean outputOptionSpecifiedAsBoolean() {
+	private boolean outputOptionIsSpecified() {
 		return console || saveToFile;
 	}
 
