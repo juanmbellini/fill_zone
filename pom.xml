@@ -76,6 +76,7 @@
 					</descriptorRefs>
 					<appendAssemblyId>false</appendAssemblyId>
 					<attach>false</attach>
+					<outputDirectory>${dir}</outputDirectory>
 				</configuration>
 				<executions>
 					<execution>
