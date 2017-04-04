@@ -158,12 +158,14 @@ public class Main {
 			board = BoardReader.readResourceBoard(boardNumber);
 		}
 		final GPSEngine engine = new GPSEngine(new FillZoneProblem(board, heuristic), strategy);
+		long startingTime = System.currentTimeMillis();
 		engine.findSolution();
+		long elapsed = System.currentTimeMillis() - startingTime;
 
 		if (console) {
-			SolutionWriter.printToConsole(engine);
+			SolutionWriter.printToConsole(engine, elapsed);
 		} else if (saveToFile) {
-			SolutionWriter.printToFile(engine, solutionFilePath);
+			SolutionWriter.printToFile(engine, solutionFilePath, elapsed);
 		}
 
 	}

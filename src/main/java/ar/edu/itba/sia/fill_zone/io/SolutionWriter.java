@@ -24,8 +24,8 @@ public class SolutionWriter {
 	 *
 	 * @param engine The engine providing the solution to be printed.
 	 */
-	public static void printToConsole(GPSEngine engine) {
-		printToStream(engine, System.out);
+	public static void printToConsole(GPSEngine engine, long elapsed) {
+		printToStream(engine, System.out, elapsed);
 	}
 
 	/**
@@ -34,8 +34,8 @@ public class SolutionWriter {
 	 * @param engine The engine providing the solution to be printed.
 	 * @param path   The path of the file.
 	 */
-	public static void printToFile(GPSEngine engine, String path) {
-		printToStream(engine, createFilePrintStream(path), false);
+	public static void printToFile(GPSEngine engine, String path, long elapsed) {
+		printToStream(engine, createFilePrintStream(path), false, elapsed);
 	}
 
 
@@ -73,8 +73,8 @@ public class SolutionWriter {
 	 * @param engine      The engine providing the solution to be printed.
 	 * @param printStream The stream to which the solution will be printed.
 	 */
-	private static void printToStream(GPSEngine engine, PrintStream printStream) {
-		printToStream(engine, printStream, null);
+	private static void printToStream(GPSEngine engine, PrintStream printStream, long elapsed) {
+		printToStream(engine, printStream, null, elapsed);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class SolutionWriter {
 	 * @param printStream   The stream to which the solution will be printed.
 	 * @param includeColors Indicates if colors must be included in the printed solution.
 	 */
-	private static void printToStream(GPSEngine engine, PrintStream printStream, Boolean includeColors) {
+	private static void printToStream(GPSEngine engine, PrintStream printStream, Boolean includeColors, long elapsed) {
 		if (engine.isFailed()) {
 			printStream.println("No solution was found.");
 			return;
@@ -117,6 +117,7 @@ public class SolutionWriter {
 		printStream.println();
 		printStream.println("Exploded nodes: " + explosionCounter);
 		printStream.println("Solution depth: " + depth);
+		printStream.println("Time elapsed: " + ((double) elapsed / 1000) + " secs.");
 	}
 
 	/**
