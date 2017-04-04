@@ -95,22 +95,22 @@ public class SolutionWriter {
 			printStream.println("Engine was not executed yet.");
 			return;
 		}
-		System.out.println("A solution was found.");
-		System.out.println();
-		System.out.println();
+		printStream.println("A solution was found.");
+		printStream.println();
+		printStream.println();
 
 		final Stack<GPSNode> pathToSolution = getPathToSolution(engine.getSolutionNode());
 		final int depth = pathToSolution.size() - 1;
 
-		System.out.println("Initial board: ");
+		printStream.println("Initial board: ");
 		printFillZoneState(pathToSolution.pop().getState(), printStream, includeColors);
-		System.out.println();
+		printStream.println();
 		while (!pathToSolution.isEmpty()) {
 			GPSNode node = pathToSolution.pop();
-			System.out.println("Applied rule: " + node.getGenerationRule().getName());
-			System.out.println("Board: ");
+			printStream.println("Applied rule: " + node.getGenerationRule().getName());
+			printStream.println("Board: ");
 			printFillZoneState(node.getState(), printStream, includeColors);
-			System.out.println();
+			printStream.println();
 		}
 
 		printStream.println();
