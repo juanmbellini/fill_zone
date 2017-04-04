@@ -40,6 +40,6 @@ public enum SearchStrategy {
 	abstract Solver createSolver(GPSProblem problem);
 
 	public static SearchStrategy fromString(String name) {
-		return SearchStrategy.valueOf(name.toUpperCase());
+		return valueOf(name.toUpperCase());
 	}
 }
