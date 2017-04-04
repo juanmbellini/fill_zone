@@ -51,6 +51,7 @@ Options are:
 * ```dfs```
 * ```bfs```
 * ```iddfs```
+* ```iddfs-border```
 * ```greedy```
 * ```astar``` (Default option)
 
