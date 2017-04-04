@@ -155,7 +155,7 @@ public class Board {
 	 * @param colors  The amount of colors.
 	 * @return The generated board.
 	 */
-	static Board random(int rows, int columns, int colors) {
+	static public Board random(int rows, int columns, int colors) {
 		final int[][] board = new int[rows][columns];
 		IntStream.range(0, rows)
 				.forEach(row -> IntStream.range(0, columns)
