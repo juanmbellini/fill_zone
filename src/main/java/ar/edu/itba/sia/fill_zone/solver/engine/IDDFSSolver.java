@@ -2,16 +2,23 @@ package ar.edu.itba.sia.fill_zone.solver.engine;
 
 import ar.edu.itba.sia.fill_zone.solver.api.GPSProblem;
 
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Class implementing the IDDFS searching strategy.
  */
 public final class IDDFSSolver extends Solver {
 
+	/**
+	 * Indicates the actual depth in the iteration
+	 */
 	private long actualDepth;
 
+	/**
+	 * Contains the nodes in the actual path.
+	 */
+	private final HashSet<GPSNode> actualBranchNodes;
 
 
 	/**
@@ -21,6 +28,7 @@ public final class IDDFSSolver extends Solver {
 	 */
 	public IDDFSSolver(GPSProblem problem) {
 		super(problem);
+		actualBranchNodes = new HashSet<>();
 		clearSolver();
 	}
 
@@ -30,10 +38,9 @@ public final class IDDFSSolver extends Solver {
 		clearSolver();
 
 		while (actualDepth < Long.MAX_VALUE) {
-//			getBestCosts().clear(); // Remove costs in order to set as not reached all nodes
-			IDDFSNode result = recursiveSolve(new IDDFSNode(initialNode), 0);
+			GPSNode result = recursiveSolve(initialNode, 0);
 			if (result != null) {
-				succeed(result.getGPSNode());
+				succeed(result);
 				return;
 			}
 			actualDepth++;
@@ -41,28 +48,31 @@ public final class IDDFSSolver extends Solver {
 		fail();
 	}
 
-
-	private IDDFSNode recursiveSolve(IDDFSNode node, int depth) {
-
-		if (depth > actualDepth || node.isMarked()) {
+	/**
+	 * Finds the solution using recursion.
+	 *
+	 * @param node  The actual node.
+	 * @param depth The actual depth.
+	 * @return The next node in the solution path.
+	 */
+	private GPSNode recursiveSolve(GPSNode node, int depth) {
+		if (depth > actualDepth || actualBranchNodes.contains(node)) {
 			return null;
 		}
-		node.mark();
-		if (problem.isGoal(node.getGPSNode().getState())) {
+		actualBranchNodes.add(node);
+		if (problem.isGoal(node.getState())) {
 			return node;
 		}
-		List<IDDFSNode> children = applyRules(node.getGPSNode()).stream()
-				.map(IDDFSNode::new)
-				.collect(Collectors.toList());
+		List<GPSNode> children = applyRules(node);
 
-		for (IDDFSNode child : children) {
-			IDDFSNode result = recursiveSolve(child, depth + 1);
+		for (GPSNode child : children) {
+			GPSNode result = recursiveSolve(child, depth + 1);
 			if (result != null) {
-				updateBest(result.getGPSNode());
+				updateBest(node);
 				return result;
 			}
 		}
-		node.unMark();
+		actualBranchNodes.remove(node);
 		return null;
 	}
 
@@ -77,39 +87,7 @@ public final class IDDFSSolver extends Solver {
 	protected final void clearSolver() {
 		super.clearSolver();
 		actualDepth = 0;
-	}
-
-
-	private static class IDDFSNode {
-
-		private boolean marked;
-
-		private final GPSNode node;
-
-
-		private IDDFSNode(GPSNode node) {
-			this.node = node;
-			marked = false;
-		}
-
-
-		public GPSNode getGPSNode() {
-			return node;
-		}
-
-		public boolean isMarked() {
-			return marked;
-		}
-
-		private void mark() {
-			this.marked = true;
-		}
-
-		private void unMark() {
-			this.marked = false;
-		}
-
-
+		actualBranchNodes.clear();
 	}
 
 
