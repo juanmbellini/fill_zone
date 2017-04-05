@@ -28,12 +28,17 @@ git clone https://github.com/juanmbellini/fill_zone.git
 
 ### Installing
 
-1. Let maven resolve dependencies:
+1. Change working directory to project root (i.e where pom.xml is located):
+    ```
+    cd <project-root>
+    ```
+
+2. Let maven resolve dependencies:
     ```
     mvn dependency:resolve
     ```
 
-2. Create jar file
+3. Create jar file
     ```
     mvn clean package [-D dir=<destination-directory>]
     ```
