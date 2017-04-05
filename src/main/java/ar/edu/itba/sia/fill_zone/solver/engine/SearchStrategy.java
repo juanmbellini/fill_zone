@@ -50,4 +50,9 @@ public enum SearchStrategy {
 	public static SearchStrategy fromString(String name) {
 		return valueOf(name.replace('-', '_').toUpperCase());
 	}
+
+	@Override
+	public String toString() {
+		return super.toString().replace('_', '-').toLowerCase();
+	}
 }

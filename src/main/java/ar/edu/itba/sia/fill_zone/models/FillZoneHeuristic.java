@@ -176,7 +176,7 @@ public enum FillZoneHeuristic implements Heuristic {
 	 * Solve for a number of steps as if only two colors existed, and then check how many colors remain.
 	 * Admissible Heuristic.
 	 */
-	COMBINED_TWO_COLORS_AND_REMAINING_COLORS(){
+	COMBINED(){
 
 		private int steps = 1;
 
@@ -249,7 +249,7 @@ public enum FillZoneHeuristic implements Heuristic {
 
             int remainingColors = REMAINING_COLORS.getHValue(state);
             int twoColors = TWO_COLORS.getHValue(state);
-			int combined = COMBINED_TWO_COLORS_AND_REMAINING_COLORS.getHValue(state);
+			int combined = COMBINED.getHValue(state);
             return remainingColors>twoColors ? (remainingColors>combined ? remainingColors:combined) : (twoColors>combined?twoColors:combined);
         }
     },
@@ -257,22 +257,12 @@ public enum FillZoneHeuristic implements Heuristic {
 	;
 
 	public static FillZoneHeuristic fromString(String name) {
-		switch (name.toLowerCase().trim()) {
-			case "remaining-groups":
-				return REMAINING_GROUPS;
-			case "remaining-lockers":
-				return REMAINING_LOCKERS;
-			case "remaining-colors":
-				return REMAINING_COLORS;
-			case "two-colors":
-				return TWO_COLORS;
-			case "combined":
-				return COMBINED_TWO_COLORS_AND_REMAINING_COLORS;
-			case "max-admissible":
-				return MAX_ADMISSIBLE;
-			default:
-				throw new IllegalArgumentException();
-		}
+		return valueOf(name.replace('-', '_').trim().toUpperCase());
+	}
+
+	@Override
+	public String toString() {
+		return super.toString().replace('_', '-').toLowerCase();
 	}
 
 	/**

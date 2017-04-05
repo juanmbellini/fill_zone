@@ -17,7 +17,7 @@ public class PositiveNumberValidator implements IParameterValidator {
 			throw new ParameterException("Parameter " + name + " must be an integer.");
 		}
 		if (number <= 0) {
-			throw new ParameterException("Parameter " + name + " must be between positive.");
+			throw new ParameterException("Parameter " + name + " must be positive.");
 		}
 	}
 }

@@ -43,10 +43,16 @@ git clone https://github.com/juanmbellini/fill_zone.git
 The application can be executed running ```java -jar <path-to-jar>```.
 It can be configured in order to execute in different modes. This is done including parameters. The following sections will describe these modes. 
 
+### Displaying usage message
+You can display the usage message by setting the ```-h``` or the ```--help``` parameters.
+Example of usage:
+```
+java -jar <path-to-jar> -h
+```
 
 
 ### Indicating a searching strategy
-To indicate the searching strategy, you must include the ```-s``` or the ```--strategy``` parameters, together with the selected strategy.
+To indicate the searching strategy, you must include the ```-S``` or the ```--strategy``` parameters, together with the selected strategy.
 Options are:
 * ```dfs```
 * ```bfs```
@@ -61,7 +67,7 @@ java -jar <path-to-jar> --strategy greedy
 ```
 
 ### Indicating an heuristic
-In case ```greedy``` or ```astar``` are selected, an heuristic must be specified. You can do this with the ```-h``` or the ```--heuristic``` parameters, together with the selected strategy.
+In case ```greedy``` or ```astar``` are selected, an heuristic must be specified. You can do this with the ```-H``` or the ```--heuristic``` parameters, together with the selected strategy.
 Options are:
 * ```remaining-groups```
 * ```remaining-lockers```
@@ -72,7 +78,7 @@ Options are:
 
 Example of usage:
 ```
-java -jar <path-to-jar> --strategy astar -h two-colors 
+java -jar <path-to-jar> --strategy astar -H two-colors 
 ```
 
 ### Indicating a board to solve

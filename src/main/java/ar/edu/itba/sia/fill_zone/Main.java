@@ -57,12 +57,17 @@ public class Main {
 	 * Execution parameters
 	 */
 
-	@Parameter(names = {"-h", "--heuristic",}, description = "Heuristic to use.",
-			converter = FillZoneHeuristicConverter.class)
+	@Parameter(names = {"-h", "--help"}, description = "Prints usage", help = true)
+	private boolean usage = false;
+
+	@Parameter(names = {"-H", "--heuristic",}, description = "Heuristic to use.",
+			converter = FillZoneHeuristicConverter.class,
+			validateWith = FillZoneHeuristicValidator.class)
 	private FillZoneHeuristic heuristic = FillZoneHeuristic.REMAINING_COLORS;
 
-	@Parameter(names = {"-s", "--strategy",}, description = "Searching strategy.",
-			converter = SearchStrategyConverter.class)
+	@Parameter(names = {"-S", "--strategy",}, description = "Searching strategy.",
+			converter = SearchStrategyConverter.class,
+			validateWith = SearchStrategyValidator.class)
 	private SearchStrategy strategy = SearchStrategy.ASTAR;
 
 
@@ -112,7 +117,14 @@ public class Main {
 
 		Main main = new Main();
 		try {
-			new JCommander(main, args);
+			JCommander jCommander = new JCommander(main, args);
+			jCommander.setProgramName("java -jar <path-to-jar>");
+
+			// Check if help must be printed
+			if (main.usage) {
+				jCommander.usage();
+				return;
+			}
 
 			// Default value for input
 			if (!main.inputOptionIsSpecified()) {
@@ -130,7 +142,9 @@ public class Main {
 			System.err.println("Wrong board file format.");
 			System.exit(1);
 		} catch (ParameterException e) {
+			System.err.println("Fatal: one or more parameters were not understand.");
 			System.err.println(e.getMessage());
+			printUsageOnParameterException();
 			System.exit(1);
 		} catch (URISyntaxException ignored) {
 
@@ -274,4 +288,15 @@ public class Main {
 	}
 
 
+	/**
+	 * Forces {@link JCommander} to print usage.
+	 */
+	private static void printUsageOnParameterException() {
+		String[] args;
+		args = new String[1];
+		args[0] = "--help";
+		JCommander jCommander = new JCommander(new Main(), args);
+		jCommander.setProgramName("java -jar <path-to-jar>");
+		jCommander.usage();
+	}
 }
